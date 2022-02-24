@@ -8,7 +8,7 @@ const Nav = () => {
         <Flex align="center" justify="space-between" mb={8} p={8} w="100%" bg="rgba(0, 0, 0, .5)">
             <Link to="/" as={ReactRouterLink}>Logo</Link>
             <Spacer />
-            <Link to="/" as={ReactRouterLink} pr={2}>LeaderBoard</Link>
+            <Link to="/" as={ReactRouterLink} pr={2}>Leaderboard</Link>
             <Link to="/quiz" as={ReactRouterLink} pr={2}>Quizzes</Link>
             <Link to="/profile" as={ReactRouterLink} pr={2}>
                 <IconButton icon={<FaUser size='44px'/>} variant="link" size='lg'></IconButton>
