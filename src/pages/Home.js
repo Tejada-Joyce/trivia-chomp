@@ -1,14 +1,13 @@
-import Layout from "../components/layout/Layout"
-import Background from "../components/ui/Background"
+import CardModal from "../components/Profile/CardModal";
+import Background from "../components/ui/Background";
 
 const Home = () => {
-    return (
-        <Layout>
-            <Background>
-                <p>Home Page</p>
-            </Background>
-        </Layout>
-    )
-}
+  return (
+    <Background>
+      <p>Home Page</p>
+      <CardModal />
+    </Background>
+  );
+};
 
-export default Home
+export default Home;
