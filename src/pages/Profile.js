@@ -1,14 +1,11 @@
-import Layout from "../components/layout/Layout"
-import Background from "../components/ui/Background"
+import Background from "../components/ui/Background";
 
 const Profile = () => {
-    return (
-        <Layout>
-            <Background>
-                <p>Profile</p>
-            </Background>
-        </Layout>
-    )
-}
+  return (
+    <Background>
+      <p>Profile</p>
+    </Background>
+  );
+};
 
-export default Profile
+export default Profile;

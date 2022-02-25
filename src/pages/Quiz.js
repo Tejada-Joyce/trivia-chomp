@@ -1,14 +1,11 @@
-import Layout from "../components/layout/Layout"
-import Background from "../components/ui/Background"
+import Background from "../components/ui/Background";
 
 const Quiz = () => {
-    return (
-        <Layout>
-            <Background>
-                <p>Quiz Page</p>
-            </Background>
-        </Layout>
-    )
-}
+  return (
+    <Background>
+      <p>Quiz Page</p>
+    </Background>
+  );
+};
 
-export default Quiz
+export default Quiz;
