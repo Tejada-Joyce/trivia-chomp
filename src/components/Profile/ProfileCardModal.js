@@ -3,14 +3,13 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
 import ProfileForm from "./ProfileForm";
 
-const CardModal = () => {
+const ProfileCardModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -18,10 +17,11 @@ const CardModal = () => {
       <Button onClick={onOpen}>Open Modal</Button>
 
       <Modal
-        closeOnOverlayClick={true} //change to false
+        closeOnOverlayClick={false}
         isOpen={isOpen}
         onClose={onClose}
         size="lg"
+        // scrollBehavior="inside"
       >
         <ModalOverlay />
         <ModalContent>
@@ -29,17 +29,12 @@ const CardModal = () => {
             Set Your Profile
           </ModalHeader>
           <ModalBody pb={6}>
-            <ProfileForm />
+            <ProfileForm onClose={onClose} />
           </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
-              Save
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
 };
 
-export default CardModal;
+export default ProfileCardModal;
