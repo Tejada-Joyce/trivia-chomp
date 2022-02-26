@@ -4,18 +4,20 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 import ProfileForm from "./ProfileForm";
 
 const ProfileCardModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  useEffect(() => {
+    onOpen();
+  }, [onOpen]);
+
   return (
     <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
