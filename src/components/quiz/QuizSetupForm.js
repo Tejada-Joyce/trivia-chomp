@@ -1,7 +1,12 @@
-import { Select, FormControl, FormLabel,Divider,Button, } from "@chakra-ui/react";
+import { Select, FormControl, FormLabel, Divider, Button, } from "@chakra-ui/react";
+import { useNavigate } from "react-router";
 
 export default function QuizSetupForm() {
-    const submitHandler = () => {
+    const navigate = useNavigate();
+    const submitHandler = (e) => {
+        e.preventDefault();
+        let chosenCategory = e.target.elements.category.value
+        navigate(`/quiz/${chosenCategory}`)
 
     }
     return <form onSubmit={submitHandler}>
