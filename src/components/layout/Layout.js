@@ -9,6 +9,7 @@ const Layout = () => {
       bgRepeat="no-repeat"
       bgSize="100%"
       minHeight="100vh"
+      h="100%"
     >
       <Nav />
       <Outlet />
