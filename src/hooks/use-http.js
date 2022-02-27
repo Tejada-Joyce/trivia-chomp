@@ -24,7 +24,8 @@ const useHttp = () => {
           applyData(data)
 
       } catch (err) {
-        setError(err.message || 'Something went wrong!');
+          setError(err.message || 'Something went wrong!');
+          console.log(err)
       }
       setIsLoading(false);
     }, []);
