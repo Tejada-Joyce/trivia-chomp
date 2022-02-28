@@ -3,7 +3,10 @@ import { useDisclosure } from "@chakra-ui/react";
 
 import QuizSetupForm from "./QuizSetupForm";
 export default function QuizSetupModal(props) {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const closeHandler = (e) => {
+    console.log(e)
+  }
 
     return (
         <>
@@ -14,7 +17,7 @@ export default function QuizSetupModal(props) {
                 closeOnEsc="true"
                 closeOnOverlayClick="true"
           >
-                <ModalOverlay/>
+          <ModalOverlay onClick={closeHandler} />
             <ModalContent>
               <ModalHeader fontSize="3xl" textAlign="center">
                 Quiz
