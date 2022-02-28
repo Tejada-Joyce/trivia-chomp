@@ -8,17 +8,26 @@ import { Button, Progress, Radio, RadioGroup, Spinner, Stack } from "@chakra-ui/
 import React from "react";
 
 
+
 const Quiz = () => {
   const { isLoading, error, sendRequest } = useHttp()
   const { categoryId } = useParams();
 
   const [questions, setQuestions] = useState([]);
   const [curQuestion, setCurQuestion] = useState(0);
-  const [value, setValue] = useState('1')
+  const [value, setValue] = useState('0')
+  const [answers, setAnswers] = useState([])
 
   let category = ''
   if (categoryId !== 'random') {
     category = categoryId
+  }
+
+  const updateAnswerHandler = (e) => {
+    setValue(prev => {
+      console.log('old value: ', prev, ' new value: ', e)
+      return e.toString()
+    })
   }
 
   const questionUrl = `https://opentdb.com/api.php?amount=10&category=${category}`
@@ -26,19 +35,31 @@ const Quiz = () => {
   useEffect(() => {
     const applyData = (response) => {
       setQuestions(response.results)
+
     }
     sendRequest({ url: questionUrl }, applyData)
-  }, [sendRequest]);
 
-    let possibleAnswers = questions[curQuestion]?.incorrect_answers.map((answer, index) => {
-      return <Radio key={index} value={index}>{answer}</Radio>
-    })
-  
-    let length = questions[curQuestion]?.incorrect_answers.length
-    possibleAnswers?.push(<Radio key={length} value={length}>{questions[curQuestion]?.correct_answer}</Radio>)
-  
-    // const shuffledPossibleAnswers = possibleAnswers?.sort((a, b) => 0.5 - Math.random())
-  
+  }, [sendRequest, questionUrl]);
+
+  useEffect(() => {
+    
+    if (questions.length > 0) {
+      setAnswers(prev => {
+        const currentQuestion = questions[curQuestion]
+
+        const newAnswers = currentQuestion.incorrect_answers;
+          newAnswers.push(currentQuestion.correct_answer)
+          newAnswers.sort((a, b) => 0.5 - Math.random())
+        return newAnswers.slice()
+      })
+    }
+
+  }, [questions, curQuestion]);
+
+  const possibleAnswers = answers.map((answer, index) => {
+    return <Radio key={index} value={index.toString()}>{answer}</Radio>
+  })
+
   let content = (
     <div>
       <Progress />
@@ -46,7 +67,10 @@ const Quiz = () => {
         <p>Category: {questions[curQuestion]?.category}</p>
         <p>{questions[curQuestion]?.question}</p>
         <p>quiz answers</p>
-        <RadioGroup name="answer" onChange={setValue} value={value}>
+        <RadioGroup name="answer"
+          onChange={updateAnswerHandler}
+          value={value}
+        >
           <Stack>
             {possibleAnswers}
           </Stack>
