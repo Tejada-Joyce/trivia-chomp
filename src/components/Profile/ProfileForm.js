@@ -8,7 +8,7 @@ import {
   Grid,
   useToast,
 } from "@chakra-ui/react";
-import AvatarCard from "./AvatarCard";
+import AvatarCard from "./AvatarRadioButton";
 import dinosaurs from "../../images/index.js";
 import { useState } from "react";
 
