@@ -4,8 +4,9 @@ import Background from "../components/ui/Background";
 import { useParams } from "react-router";
 import useHttp from "../hooks/use-http";
 import { useState, useEffect } from "react";
-import { Button, Progress, Radio, RadioGroup, Spinner, Stack } from "@chakra-ui/react";
+import { Button, Progress, Radio, RadioGroup, Spinner, Stack, Alert, AlertDescription, ListItem, List, ListIcon } from "@chakra-ui/react";
 import React from "react";
+import { CheckCircleIcon, SmallCloseIcon } from "@chakra-ui/icons";
 
 
 
@@ -17,21 +18,25 @@ const Quiz = () => {
   const [curQuestion, setCurQuestion] = useState(0);
   const [value, setValue] = useState('0')
   const [answers, setAnswers] = useState([])
+  const [correctAnswer, setCorrectAnswer] = useState()
+  const [isCorrect, setIsCorrect] = useState(false)
+  const [answered, setAnswered] = useState(false)
 
   let category = ''
   if (categoryId !== 'random') {
     category = categoryId
   }
 
+  //update radio when item is clicked
   const updateAnswerHandler = (e) => {
     setValue(prev => {
-      console.log('old value: ', prev, ' new value: ', e)
       return e.toString()
     })
   }
 
   const questionUrl = `https://opentdb.com/api.php?amount=10&category=${category}`
 
+  //get data
   useEffect(() => {
     const applyData = (response) => {
       setQuestions(response.results)
@@ -41,41 +46,105 @@ const Quiz = () => {
 
   }, [sendRequest, questionUrl]);
 
+  // set answers
   useEffect(() => {
-    
-    if (questions.length > 0) {
-      setAnswers(prev => {
-        const currentQuestion = questions[curQuestion]
 
+    if (questions.length > 0) {
+      const currentQuestion = questions[curQuestion]
+      setAnswers(prev => {
         const newAnswers = currentQuestion.incorrect_answers;
-          newAnswers.push(currentQuestion.correct_answer)
-          newAnswers.sort((a, b) => 0.5 - Math.random())
+        newAnswers.push(currentQuestion.correct_answer)
+        newAnswers.sort((a, b) => 0.5 - Math.random())
         return newAnswers.slice()
       })
     }
 
   }, [questions, curQuestion]);
 
+  useEffect(() => {
+    answers.forEach((answer, index) => {
+      if (answer === questions[curQuestion].correct_answer) {
+        setCorrectAnswer(index.toString())
+      }
+    })
+
+  }, [answers, curQuestion, questions]);
+
   const possibleAnswers = answers.map((answer, index) => {
     return <Radio key={index} value={index.toString()}>{answer}</Radio>
   })
 
+  // let answerFeedback = []
+  //handle form submit
+  const submitQuestionHandler = (e) => {
+    //find out which one had the correct answer
+    e.preventDefault();
+    setAnswered(true)
+    const userAnswer = e.target.answer.value;
+    if (userAnswer === correctAnswer) {
+      //give user feedback 
+      console.log('correct!')
+      setIsCorrect(true)
+    } else {
+      setIsCorrect(false)
+      console.log('incorrect')
+    }
+
+  }
+
+  const nextQuestionHandler = () => {
+    setCurQuestion(prev => prev + 1)
+    setIsCorrect(false);
+    setAnswered(false)
+    setValue(0)
+  }
+  //set content
   let content = (
     <div>
-      <Progress />
-      <form>
+      <Progress value={(curQuestion + 1) * 10} />
+      {
+        answered &&
+        <Alert variant="solid" status={isCorrect ? 'success' : 'error'}>
+          <AlertDescription >{isCorrect ? 'Correct!' : 'Incorrect'}</AlertDescription>
+        </Alert>
+      }
+      <form onSubmit={submitQuestionHandler}>
         <p>Category: {questions[curQuestion]?.category}</p>
         <p>{questions[curQuestion]?.question}</p>
-        <p>quiz answers</p>
-        <RadioGroup name="answer"
-          onChange={updateAnswerHandler}
-          value={value}
-        >
-          <Stack>
-            {possibleAnswers}
-          </Stack>
-        </RadioGroup>
-        <Button>Submit</Button>
+        {
+          !answered &&
+          <RadioGroup name="answer"
+            onChange={updateAnswerHandler}
+            value={value}
+          >
+            <Stack>
+              {possibleAnswers}
+            </Stack>
+          </RadioGroup>
+        }
+
+        {
+          answered && <List spacing="3">
+            {
+              answers.map((answer, index) => {
+                if (correctAnswer == index) {
+                  return <ListItem key={index}>
+                    <ListIcon  as={CheckCircleIcon} color="green"/>
+                    {answer}
+                  </ListItem>
+                } else {
+                  return <ListItem key={index}>
+                    <ListIcon  as={SmallCloseIcon} color="red"/>
+                    {answer}
+                  </ListItem>
+                }
+                })
+            }
+          </List>
+        }
+
+        {!answered && <Button bg="gold" color="black" mt={4} type="submit">Submit</Button>}
+        {answered && <Button bg="gold" color="black" mt={4} onClick={nextQuestionHandler}>Next</Button>}
       </form>
     </div>
   );
