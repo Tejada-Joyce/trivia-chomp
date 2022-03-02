@@ -9,7 +9,7 @@ export const DUMMY_DATA = [
         id: "1",
         category: "Art",
         isCorrect: 0,
-        timestamp: "01-03-2022",
+        timestamp: "02-28-2022",
       },
       {
         id: "2",
@@ -33,7 +33,7 @@ export const DUMMY_DATA = [
         id: "5",
         category: "Art",
         isCorrect: 1,
-        timestamp: "01-03-2022",
+        timestamp: "03-06-2022",
       },
     ],
   },
@@ -47,13 +47,13 @@ export const DUMMY_DATA = [
         id: "1",
         category: "Art",
         isCorrect: 1,
-        timestamp: "03-03-2022",
+        timestamp: "03-02-2022",
       },
       {
         id: "2",
         category: "Art",
         isCorrect: 1,
-        timestamp: "01-03-2022",
+        timestamp: "02-27-2022",
       },
       {
         id: "3",
@@ -73,7 +73,7 @@ export const DUMMY_DATA = [
         id: "1",
         category: "Art",
         isCorrect: 1,
-        timestamp: "01-03-2022",
+        timestamp: "03-05-2022",
       },
       {
         id: "2",

@@ -1,7 +1,7 @@
 import CardTop from "./CardTop";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { DUMMY_DATA } from "./dummy_data";
-import moment from "moment";
+import { format, isThisMonth, isThisWeek } from "date-fns";
 
 const sortDataByPoints = (objs) => {
   const sortedData = [...objs].sort((a, b) => {
@@ -22,13 +22,12 @@ const sortDataByPoints = (objs) => {
 
 const filterDataByTime = (objs, time) => {
   let filteredData = [];
-  const today = moment();
-  const currentMonth = today.month();
-  switch (time) {
+  const today = new Date();
+  switch (time.toLowerCase()) {
     case "day":
       filteredData = [...objs].map((obj) => {
         const questions = obj.questions.filter(
-          (question) => today.format("MM-DD-YYYY") === question.timestamp
+          (question) => format(today, "MM-dd-yyyy") === question.timestamp
         );
         return { ...obj, questions: questions };
       });
@@ -36,24 +35,18 @@ const filterDataByTime = (objs, time) => {
       break;
     case "week":
       filteredData = [...objs].map((obj) => {
-        const questions = obj.questions.filter((question) => {
-          const questionMonth = moment(question.timestamp).month();
-          console.log("month: ", currentMonth);
-          console.log("questionMonth: ", questionMonth);
-          return currentMonth === questionMonth;
-        });
+        const questions = obj.questions.filter((question) =>
+          isThisWeek(new Date(question.timestamp))
+        );
         return { ...obj, questions: questions };
       });
-      console.log("filtered after map: ", filteredData);
       filteredData = filteredData.filter((obj) => obj.questions.length !== 0);
-      console.log("filtered after filter: ", filteredData);
       break;
     case "month":
       filteredData = [...objs].map((obj) => {
-        const questions = obj.questions.filter((question) => {
-          const questionMonth = moment(question.timestamp).month();
-          return currentMonth === questionMonth;
-        });
+        const questions = obj.questions.filter((question) =>
+          isThisMonth(new Date(question.timestamp))
+        );
         return { ...obj, questions: questions };
       });
       filteredData = filteredData.filter((obj) => obj.questions.length !== 0);
@@ -64,7 +57,7 @@ const filterDataByTime = (objs, time) => {
   return [...filteredData];
 };
 
-const getUserData = (user) => {
+const formatUserData = (user) => {
   const questionsTaken = user.questions.length;
   let points = 0;
   user.questions.forEach((question) => {
@@ -82,14 +75,14 @@ const getUserData = (user) => {
 };
 
 const LeaderBoard = () => {
-  const users = DUMMY_DATA.map(getUserData);
-  const usersDay = sortDataByPoints(
-    filterDataByTime(DUMMY_DATA, "day").map(getUserData)
-  );
-  const usersMonth = sortDataByPoints(
-    filterDataByTime(DUMMY_DATA, "month").map(getUserData)
-  );
-
+  const sortedUsers = ["Day", "Week", "Month"].map((time) => {
+    return {
+      time: time,
+      users: sortDataByPoints(
+        filterDataByTime(DUMMY_DATA, time).map(formatUserData)
+      ),
+    };
+  });
   return (
     <Grid
       templateColumns={["1fr", "1fr", "repeat(3, 1fr)"]}
@@ -97,15 +90,11 @@ const LeaderBoard = () => {
       m="10px auto"
       gap={3.5}
     >
-      <GridItem bg="rgba(0, 0, 0, .75)" p="20px">
-        <CardTop time="Day" users={usersDay} />
-      </GridItem>
-      <GridItem bg="rgba(0, 0, 0, .75)" p="20px">
-        <CardTop time="Week" users={users} />
-      </GridItem>
-      <GridItem bg="rgba(0, 0, 0, .75)" p="20px">
-        <CardTop time="Month" users={usersMonth} />
-      </GridItem>
+      {sortedUsers.map((users) => (
+        <GridItem key={users.time} bg="rgba(0, 0, 0, .75)" p="20px">
+          <CardTop time={users.time} users={users.users} />
+        </GridItem>
+      ))}
     </Grid>
   );
 };
