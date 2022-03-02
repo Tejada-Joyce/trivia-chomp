@@ -1,11 +1,11 @@
 import { Heading, OrderedList, ListItem } from "@chakra-ui/react";
 import CardTopItem from "./CardTopItem.js";
 
-const CardTop = ({ criteria, users }) => {
+const CardTop = ({ time, users }) => {
   return (
     <>
       <Heading as="h2" size="lg">
-        {criteria}'s Top
+        {time}'s Top
       </Heading>
       <OrderedList
         maxW={["100%", "100%", "280px"]}
