@@ -18,8 +18,7 @@ const AuthForm = () => {
   const validEmail = (email) => {
     return (/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}/).test(email);
   }
-
-
+  
   //Handle the form submission with the checks in place
   const submitHandler = (event) => {
     event.preventDefault();
