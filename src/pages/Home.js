@@ -5,7 +5,7 @@ import Background from "../components/ui/Background";
 const Home = () => {
   return (
     <>
-      {/* <ProfileCardModal /> */}
+      <ProfileCardModal />
       <Background>
         <p>Home Page</p>
       </Background>
