@@ -8,19 +8,39 @@ import { Button, Progress, Radio, RadioGroup, Spinner, Stack, Alert, AlertDescri
 import React from "react";
 import { CheckCircleIcon, SmallCloseIcon } from "@chakra-ui/icons";
 
-
+const decodeHTML = function (html) {
+  var txt = document.createElement('textarea');
+  txt.innerHTML = html;
+  return txt.value;
+};
 
 const Quiz = () => {
   const { isLoading, error, sendRequest } = useHttp()
   const { categoryId } = useParams();
 
+  //questions from API
   const [questions, setQuestions] = useState([]);
+  //index of where we are currently at
   const [curQuestion, setCurQuestion] = useState(0);
+  //chosen radio button index
   const [value, setValue] = useState('0')
+  //possible answers for current question
   const [answers, setAnswers] = useState([])
+  //index of correct answer for current question
   const [correctAnswer, setCorrectAnswer] = useState()
+  //the index of the choice the user picked
+  const [userChoice, setUserChoice] = useState(null)
+  //whether or not the user answered the current question correctly
   const [isCorrect, setIsCorrect] = useState(false)
+  //whether or not the user answered
   const [answered, setAnswered] = useState(false)
+  //an array of info about the questions as will be stored in our database : 
+  // {
+  //   category: String,
+  //   timestamp: Date,
+  //   isCorrect: Boolean
+  // }
+  const [questionData, setQuestionData] = useState([])
 
   let category = ''
   if (categoryId !== 'random') {
@@ -71,7 +91,7 @@ const Quiz = () => {
   }, [answers, curQuestion, questions]);
 
   const possibleAnswers = answers.map((answer, index) => {
-    return <Radio key={index} value={index.toString()}>{answer}</Radio>
+    return <Radio key={index} value={index.toString()}>{decodeHTML(answer)}</Radio>
   })
 
   // let answerFeedback = []
@@ -81,23 +101,42 @@ const Quiz = () => {
     e.preventDefault();
     setAnswered(true)
     const userAnswer = e.target.answer.value;
+    setUserChoice(userAnswer)
     if (userAnswer === correctAnswer) {
       //give user feedback 
-      console.log('correct!')
       setIsCorrect(true)
+      
+
     } else {
       setIsCorrect(false)
-      console.log('incorrect')
     }
 
   }
-
+  //reset everything before moving to the next question
   const nextQuestionHandler = () => {
-    setCurQuestion(prev => prev + 1)
-    setIsCorrect(false);
-    setAnswered(false)
-    setValue(0)
+    //add to the array to store in database
+    const curQuestionData = {
+      category: questions[curQuestion]?.category,
+      timestamp: new Date(),
+      isCorrect: isCorrect
+    }
+    
+    setQuestionData(prev => {
+      return [...prev, curQuestionData]
+    })
+    console.log(questionData)
+
+    if (curQuestion < questions.length - 1) {
+      setCurQuestion(prev => prev + 1)
+      setIsCorrect(false);
+      setAnswered(false)
+      setValue(0)
+    } else {
+      console.log('finished')
+    }
   }
+
+
   //set content
   let content = (
     <div>
@@ -110,7 +149,7 @@ const Quiz = () => {
       }
       <form onSubmit={submitQuestionHandler}>
         <p>Category: {questions[curQuestion]?.category}</p>
-        <p>{questions[curQuestion]?.question}</p>
+        <p>{decodeHTML(questions[curQuestion]?.question)}</p>
         {
           !answered &&
           <RadioGroup name="answer"
@@ -129,7 +168,7 @@ const Quiz = () => {
               answers.map((answer, index) => {
                 if (correctAnswer == index) {
                   return <ListItem key={index}>
-                    <ListIcon  as={CheckCircleIcon} color="green"/>
+                    <ListIcon as={CheckCircleIcon} color="green"/>
                     {answer}
                   </ListItem>
                 } else {
