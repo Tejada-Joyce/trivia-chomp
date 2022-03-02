@@ -6,8 +6,9 @@ import {
   Button,
   useRadioGroup,
   Grid,
+  useToast,
 } from "@chakra-ui/react";
-import AvatarCard from "./AvatarCard";
+import AvatarCard from "./AvatarRadioButton";
 import dinosaurs from "../../images/index.js";
 import { useState } from "react";
 
@@ -15,6 +16,7 @@ const ProfileForm = ({ onClose }) => {
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const toast = useToast();
 
   const usernameChangeHandler = (e) => {
     setUsername(e.target.value);
@@ -28,6 +30,13 @@ const ProfileForm = ({ onClose }) => {
     e.preventDefault();
     console.log(username, avatar);
     onClose();
+    toast({
+      title: "Profile set successfully!",
+      status: "success",
+      position: "top-right",
+      duration: "3000",
+      isClosable: true,
+    });
   };
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "dinosaur",

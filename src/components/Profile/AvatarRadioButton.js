@@ -26,7 +26,12 @@ const AvatarCard = (props) => {
         px={5}
         py={3}
       >
-        <Avatar size={["md", "lg"]} name="Username" src={props.children} />
+        <Avatar
+          size={["md", "lg"]}
+          name="Username"
+          src={props.children}
+          p={2}
+        />
       </Box>
     </Box>
   );
