@@ -1,6 +1,6 @@
 import CardTop from "./CardTop";
 import { Grid, GridItem } from "@chakra-ui/react";
-import { DUMMY_DATA } from "./dummy_data";
+import { DUMMY_DATA } from "../../dummy_data";
 import { sortDataByPoints, filterDataByTime, formatUserData } from "./utils";
 
 const LeaderBoard = () => {
@@ -20,7 +20,7 @@ const LeaderBoard = () => {
       gap={3.5}
     >
       {sortedUsers.map((users) => (
-        <GridItem key={users.time} bg="rgba(0, 0, 0, .75)" p="20px">
+        <GridItem key={users.time} bg="rgba(0, 0, 0, .75)" p="20px 25px">
           <CardTop time={users.time} users={users.users} />
         </GridItem>
       ))}
