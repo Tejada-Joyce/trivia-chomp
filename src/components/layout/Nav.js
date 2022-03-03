@@ -47,7 +47,9 @@ const Nav = () => {
           Quizzes
         </Link>
       )}
-      {isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
+      {isLoggedIn && (
+        <button onClick={logoutHandler}><i className={'fa-solid fa-right-from-bracket'}></i></button>
+      )}
       {isLoggedIn && (
         <Link to="/profile" as={ReactRouterLink} pr={2}>
           <IconButton

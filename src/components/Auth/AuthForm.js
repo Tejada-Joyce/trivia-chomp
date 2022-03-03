@@ -116,14 +116,14 @@ const AuthForm = () => {
   return (
     <section className={classes.auth}>
       <h1>{isLogin ? "Login" : "Sign Up"}</h1>
-      <form onSubmit={submitHandler}>
+      <form onSubmit={submitHandler} noValidate>
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" ref={emailInputRef} noValidate />
+          <input type="email" id="email" ref={emailInputRef}/>
         </div>
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
-          <input type="password" id="password" ref={passwordInputRef} />
+          <input type="password" id="password" ref={passwordInputRef}/>
         </div>
         <div className={classes.actions}>
           <button>{isLogin ? "Login" : "Create Account"}</button>
