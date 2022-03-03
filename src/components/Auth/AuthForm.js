@@ -1,3 +1,4 @@
+import { da } from "date-fns/locale";
 import { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../store/auth-contex";
@@ -106,7 +107,7 @@ const AuthForm = () => {
         })
         .then((data) => {
           //Successful signup
-          authCtx.login(data.idToken);
+          authCtx.login(data);
           navigate("/");
         });
     }
