@@ -1,9 +1,12 @@
 import { useState, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../../store/auth-contex";
 
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
+  const navigate = useNavigate();
+
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const authCtx = useContext(AuthContext);
@@ -32,72 +35,81 @@ const AuthForm = () => {
     //Validate the email
     if (!validEmail(enteredEmail)) {
       setError({ error: true, message: "Invalid email!" });
-    }
-
-    let url;
-
-    //Login
-    if (isLogin) {
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI";
     } else {
-      //Create a new user
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI";
-    }
+      let url;
+      //Login
+      if (isLogin) {
+        url =
+          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI";
+      } else {
+        //Create a new user
+        url =
+          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI";
+      }
 
-    //Login or Signup request
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-        returnSecureToken: true,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          setError({ error: false, message: "" });
-          return res.json();
-        } else {
-          res.json().then((data) => {
-            //Error Handlers
-            const erroReturn = data.error.message;
-            switch (erroReturn) {
-              case "EMAIL_EXISTS":
-                setError({ error: true, message: "Email already registered!" });
-                break;
-              case "WEAK_PASSWORD : Password should be at least 6 characters":
-                setError({
-                  error: true,
-                  message: "Enter at least 6 characters long password!",
-                });
-                break;
-              case "MISSING_PASSWORD":
-                setError({
-                  error: true,
-                  message: "Enter at least 6 characters long password!",
-                });
-                break;
-              case "INVALID_PASSWORD":
-                setError({ error: true, message: "Invalid user or password!" });
-                break;
-              case "EMAIL_NOT_FOUND":
-                setError({ error: true, message: "Invalid user or password!" });
-                break;
-              default:
-                break;
-            }
-          });
-        }
+      //Login or Signup request
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
-      .then((data) => {
-        //Successful signup
-        authCtx.login(data.idToken)
-      });
+        .then((res) => {
+          if (res.ok) {
+            setError({ error: false, message: "" });
+            return res.json();
+          } else {
+            res.json().then((data) => {
+              //Error Handlers
+              const erroReturn = data.error.message;
+              switch (erroReturn) {
+                case "EMAIL_EXISTS":
+                  setError({
+                    error: true,
+                    message: "Email already registered!",
+                  });
+                  break;
+                case "WEAK_PASSWORD : Password should be at least 6 characters":
+                  setError({
+                    error: true,
+                    message: "Enter at least 6 characters long password!",
+                  });
+                  break;
+                case "MISSING_PASSWORD":
+                  setError({
+                    error: true,
+                    message: "Please enter a valid password!",
+                  });
+                  break;
+                case "INVALID_PASSWORD":
+                  setError({
+                    error: true,
+                    message: "Invalid email or password!",
+                  });
+                  break;
+                case "EMAIL_NOT_FOUND":
+                  setError({
+                    error: true,
+                    message: "Invalid email or password!",
+                  });
+                  break;
+                default:
+                  break;
+              }
+            });
+          }
+        })
+        .then((data) => {
+          //Successful signup
+          authCtx.login(data.idToken);
+          navigate("/");
+        });
+    }
   };
 
   //Form to be returned

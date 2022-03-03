@@ -1,4 +1,4 @@
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../store/auth-contex";
 
@@ -9,6 +9,13 @@ const Nav = () => {
   //Authentication
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
+  const navigate = useNavigate();
+
+  //Logout the user
+  const logoutHandler = () => {
+    authCtx.logout();
+    navigate("/auth");
+  };
 
   return (
     <Flex
@@ -40,12 +47,7 @@ const Nav = () => {
           Quizzes
         </Link>
       )}
-      {/* {isLoggedIn && (
-          TODO LOGOUT
-        <Link to="/auth" as={ReactRouterLink} pr={2}>
-          Logout
-        </Link>
-      )} */}
+      {isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
       {isLoggedIn && (
         <Link to="/profile" as={ReactRouterLink} pr={2}>
           <IconButton
