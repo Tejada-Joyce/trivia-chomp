@@ -1,3 +1,4 @@
+import { Switch } from '@chakra-ui/react';
 import { useState, useRef } from 'react';
 
 import classes from './AuthForm.module.css';
@@ -12,6 +13,7 @@ const AuthForm = () => {
   //Handle the switch in the login and create account
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
+    setError({error: false, message: ''})
   };
 
   //Validate the email function
@@ -32,40 +34,61 @@ const AuthForm = () => {
       setError({error: true, message: 'Invalid email!'})
     }
 
-    if (isLogin) {
+    let url;
 
-    } else {
-      //Fecth to create a new user
-      fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      ).then(res => {
-        if (res.ok) {
-          setIsLogin(true)
-          setError({error: false, message: ''})
-        } else {
-          //Error Handlers
-          res.json().then(data => {
-            console.log(data)
-            if (data.error.message === 'EMAIL_EXISTS') {
-              setError({error: true, message: 'Email already registered!'})
-            } else if (data.error.message === 'WEAK_PASSWORD : Password should be at least 6 characters' ||
-            data.error.message === 'MISSING_PASSWORD') {
-              setError({error: true, message: 'Enter at least 6 characters long password!'})
-            }
-          })
-        }
-      });
+    //Login
+    if (isLogin) {
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI';
+    } else { //Create a new user
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI';
     }
+
+    //Login or Signup request
+    fetch( url,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    ).then(res => {
+      if (res.ok) {
+        setError({error: false, message: ''})
+        return res.json();
+      } else {
+        res.json().then(data => {
+
+          //Error Handlers
+          const erroReturn = data.error.message;
+          switch (erroReturn) {
+            case 'EMAIL_EXISTS':
+              setError({error: true, message: 'Email already registered!'});
+              break;
+            case 'WEAK_PASSWORD : Password should be at least 6 characters':
+              setError({error: true, message: 'Enter at least 6 characters long password!'});
+              break;
+            case 'MISSING_PASSWORD':
+              setError({error: true, message: 'Enter at least 6 characters long password!'});
+              break;
+            case 'INVALID_PASSWORD':
+              setError({error: true, message: 'Invalid user or password!'});
+              break;
+            case 'EMAIL_NOT_FOUND':
+              setError({error: true, message: 'Invalid user or password!'});
+              break;
+            default:
+              break;
+          }
+        })
+      }
+    }).then(data => {
+      console.log(data)
+    });
   }
 
   return (
