@@ -5,7 +5,7 @@ import {FaUser} from 'react-icons/fa'
 
 const Nav = () => {
     return (
-        <Flex align="center" justify="space-between" mb={8} p={8} h="100%" bg="rgba(0, 0, 0, .5)">
+        <Flex align="center" justify="space-between" mb={8} p="0 10px 0 10px" h="100%" bg="rgba(0, 0, 0, .5)">
             <Link to="/" as={ReactRouterLink}>
                 <Text display="inline" fontSize="2em" fontWeight="light">Trivia</Text>
                 <Text display="inline" color="gold" fontSize="2em" fontWeight="bold">Chomp</Text>
@@ -14,7 +14,7 @@ const Nav = () => {
             <Link to="/" as={ReactRouterLink} pr={2}>Leaderboards</Link>
             <Link to="/quiz" as={ReactRouterLink} pr={2}>Quizzes</Link>
             <Link to="/profile" as={ReactRouterLink} pr={2}>
-                <IconButton icon={<FaUser size='44px'/>} variant="link" size='lg'></IconButton>
+                <IconButton icon={<FaUser size='30px'/>} variant="link" size='lg'></IconButton>
             </Link>
         </Flex>
     )
