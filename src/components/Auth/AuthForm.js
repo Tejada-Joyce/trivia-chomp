@@ -1,11 +1,12 @@
-import { Switch } from "@chakra-ui/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
+import AuthContext from "../../store/auth-contex";
 
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const authCtx = useContext(AuthContext);
 
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState({ error: false, message: "" });
@@ -93,7 +94,10 @@ const AuthForm = () => {
           });
         }
       })
-      .then((data) => {});
+      .then((data) => {
+        //Successful signup
+        authCtx.login(data.idToken)
+      });
   };
 
   //Form to be returned
@@ -103,7 +107,7 @@ const AuthForm = () => {
       <form onSubmit={submitHandler}>
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" ref={emailInputRef} novalidate />
+          <input type="email" id="email" ref={emailInputRef} noValidate />
         </div>
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
