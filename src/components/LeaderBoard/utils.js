@@ -1,5 +1,10 @@
 import { format, isThisMonth, isThisWeek } from "date-fns";
 
+const formatData = (objs) => {
+  const array = Object.values(objs).map((value) => value);
+  return array;
+};
+
 export const sortDataByPoints = (objs) => {
   const sortedData = [...objs].sort((a, b) => {
     if (b.points < a.points) {
@@ -14,7 +19,7 @@ export const sortDataByPoints = (objs) => {
       return 1;
     }
   });
-  return [...sortedData];
+  return [...sortedData].slice(0, 5);
 };
 
 export const filterDataByTime = (objs, time) => {
@@ -23,7 +28,7 @@ export const filterDataByTime = (objs, time) => {
   switch (time.toLowerCase()) {
     case "day":
       filteredData = [...objs].map((obj) => {
-        const questions = obj.questions.filter(
+        const questions = formatData(obj.questions).filter(
           (question) => format(today, "MM-dd-yyyy") === question.timestamp
         );
         return { ...obj, questions: questions };
@@ -32,7 +37,7 @@ export const filterDataByTime = (objs, time) => {
       break;
     case "week":
       filteredData = [...objs].map((obj) => {
-        const questions = obj.questions.filter((question) =>
+        const questions = formatData(obj.questions).filter((question) =>
           isThisWeek(new Date(question.timestamp))
         );
         return { ...obj, questions: questions };
@@ -41,7 +46,7 @@ export const filterDataByTime = (objs, time) => {
       break;
     case "month":
       filteredData = [...objs].map((obj) => {
-        const questions = obj.questions.filter((question) =>
+        const questions = formatData(obj.questions).filter((question) =>
           isThisMonth(new Date(question.timestamp))
         );
         return { ...obj, questions: questions };
