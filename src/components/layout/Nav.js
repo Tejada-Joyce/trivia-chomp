@@ -5,7 +5,7 @@ import {FaUser} from 'react-icons/fa'
 
 const Nav = () => {
     return (
-        <Flex align="center" justify="space-between" mb={8} p={8} w="100%" bg="rgba(0, 0, 0, .5)">
+        <Flex align="center" justify="space-between" mb={8} p={8} h="100%" bg="rgba(0, 0, 0, .5)">
             <Link to="/" as={ReactRouterLink}>
                 <Text display="inline" fontSize="2em" fontWeight="light">Trivia</Text>
                 <Text display="inline" color="gold" fontSize="2em" fontWeight="bold">Chomp</Text>

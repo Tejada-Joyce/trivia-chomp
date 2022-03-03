@@ -7,9 +7,9 @@ const Layout = () => {
     <Box
       bgImage="url('sun-tornado.svg')"
       bgRepeat="no-repeat"
-      bgSize="100%"
       minHeight="100vh"
-    >
+      h="100%"
+      backgroundSize="cover" >
       <Nav />
       <Outlet />
     </Box>
