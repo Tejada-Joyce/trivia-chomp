@@ -59,7 +59,6 @@ const Quiz = () => {
   }
 
   const playAgainHandler = () => {
-    console.log('going agin')
     setQuestions([]);
     setCurQuestion(0);
     setQuestionData([]);
