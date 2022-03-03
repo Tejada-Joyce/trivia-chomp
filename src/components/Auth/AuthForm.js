@@ -1,118 +1,124 @@
-import { Switch } from '@chakra-ui/react';
-import { useState, useRef } from 'react';
+import { Switch } from "@chakra-ui/react";
+import { useState, useRef } from "react";
 
-import classes from './AuthForm.module.css';
+import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
   const [isLogin, setIsLogin] = useState(true);
-  const [error, setError] = useState({error: false, message: ''});
+  const [error, setError] = useState({ error: false, message: "" });
 
   //Handle the switch in the login and create account
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
-    setError({error: false, message: ''})
+    setError({ error: false, message: "" });
   };
 
   //Validate the email function
   const validEmail = (email) => {
-    return (/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}/).test(email);
-  }
-  
+    return /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}/.test(email);
+  };
+
   //Handle the form submission with the checks in place
   const submitHandler = (event) => {
     event.preventDefault();
-    
+
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
     //Validate the email
     if (!validEmail(enteredEmail)) {
-      console.log("invalid Email")
-      setError({error: true, message: 'Invalid email!'})
+      setError({ error: true, message: "Invalid email!" });
     }
 
     let url;
 
     //Login
     if (isLogin) {
-      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI';
-    } else { //Create a new user
-      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI';
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI";
+    } else {
+      //Create a new user
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHfXt29GTRNx06lTpcLg5ti3j8jyvIxLI";
     }
 
     //Login or Signup request
-    fetch( url,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          email: enteredEmail,
-          password: enteredPassword,
-          returnSecureToken: true
-        }),
-        headers: {
-          'Content-Type': 'application/json'
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          setError({ error: false, message: "" });
+          return res.json();
+        } else {
+          res.json().then((data) => {
+            //Error Handlers
+            const erroReturn = data.error.message;
+            switch (erroReturn) {
+              case "EMAIL_EXISTS":
+                setError({ error: true, message: "Email already registered!" });
+                break;
+              case "WEAK_PASSWORD : Password should be at least 6 characters":
+                setError({
+                  error: true,
+                  message: "Enter at least 6 characters long password!",
+                });
+                break;
+              case "MISSING_PASSWORD":
+                setError({
+                  error: true,
+                  message: "Enter at least 6 characters long password!",
+                });
+                break;
+              case "INVALID_PASSWORD":
+                setError({ error: true, message: "Invalid user or password!" });
+                break;
+              case "EMAIL_NOT_FOUND":
+                setError({ error: true, message: "Invalid user or password!" });
+                break;
+              default:
+                break;
+            }
+          });
         }
-      }
-    ).then(res => {
-      if (res.ok) {
-        setError({error: false, message: ''})
-        return res.json();
-      } else {
-        res.json().then(data => {
+      })
+      .then((data) => {});
+  };
 
-          //Error Handlers
-          const erroReturn = data.error.message;
-          switch (erroReturn) {
-            case 'EMAIL_EXISTS':
-              setError({error: true, message: 'Email already registered!'});
-              break;
-            case 'WEAK_PASSWORD : Password should be at least 6 characters':
-              setError({error: true, message: 'Enter at least 6 characters long password!'});
-              break;
-            case 'MISSING_PASSWORD':
-              setError({error: true, message: 'Enter at least 6 characters long password!'});
-              break;
-            case 'INVALID_PASSWORD':
-              setError({error: true, message: 'Invalid user or password!'});
-              break;
-            case 'EMAIL_NOT_FOUND':
-              setError({error: true, message: 'Invalid user or password!'});
-              break;
-            default:
-              break;
-          }
-        })
-      }
-    }).then(data => {
-      console.log(data)
-    });
-  }
-
+  //Form to be returned
   return (
     <section className={classes.auth}>
-      <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
+      <h1>{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={submitHandler}>
         <div className={classes.control}>
-          <label htmlFor='email'>Your Email</label>
-          <input type='email' id='email' ref={emailInputRef} novalidate/>
+          <label htmlFor="email">Your Email</label>
+          <input type="email" id="email" ref={emailInputRef} novalidate />
         </div>
         <div className={classes.control}>
-          <label htmlFor='password'>Your Password</label>
-          <input type='password' id='password' ref={passwordInputRef}/>
+          <label htmlFor="password">Your Password</label>
+          <input type="password" id="password" ref={passwordInputRef} />
         </div>
         <div className={classes.actions}>
-          <button>{isLogin ? 'Login' : 'Create Account'}</button>
+          <button>{isLogin ? "Login" : "Create Account"}</button>
           <button
-            type='button'
+            type="button"
             className={classes.toggle}
             onClick={switchAuthModeHandler}
           >
-            {isLogin ? 'Create new account' : 'Login with existing account'}
+            {isLogin ? "Create new account" : "Login with existing account"}
           </button>
-          {error.error ? <span>{error.message}</span> : ''}
+          {error.error ? <span>{error.message}</span> : ""}
         </div>
       </form>
     </section>

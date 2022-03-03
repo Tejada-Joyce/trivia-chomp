@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Quiz from "./pages/Quiz";
 import theme from "./config/theme";
-import AuthPage from './pages/AuthPage';
+import AuthPage from "./pages/AuthPage";
 
 function App() {
   return (
@@ -15,9 +15,9 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="profile" element={<Profile />} />
-          <Route path='auth' element={<AuthPage />} />
+          <Route path="auth" element={<AuthPage />} />
           <Route path="quiz" element={<Quiz />}>
-            <Route path=":categoryId" element={ <Quiz/>}/>
+            <Route path=":categoryId" element={<Quiz />} />
           </Route>
         </Route>
       </Routes>
