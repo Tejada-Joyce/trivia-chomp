@@ -11,10 +11,11 @@ import ProfileForm from "./ProfileForm";
 
 const ProfileCardModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const username = localStorage.getItem("trivia_displayName");
 
   useEffect(() => {
-    onOpen();
-  }, [onOpen]);
+    if (!username) onOpen();
+  }, [onOpen, username]);
 
   return (
     <>
@@ -30,7 +31,7 @@ const ProfileCardModal = () => {
           <ModalHeader fontSize="3xl" textAlign="center">
             Set Your Profile
           </ModalHeader>
-          <ModalBody pb={6}>
+          <ModalBody pb={6} textAlign="center">
             <ProfileForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
