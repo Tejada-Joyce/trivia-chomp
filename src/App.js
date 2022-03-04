@@ -16,8 +16,8 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <Routes>
-        <Route path="/" element={<Layout/>}>
-        <Route path="auth" element={<AuthPage />} />
+        <Route path="/" element={<Layout />}>
+          <Route path="auth" element={<AuthPage />} />
         </Route>
         {authCtx.isLoggedIn ? (
           <Route path="/" element={<Layout />}>

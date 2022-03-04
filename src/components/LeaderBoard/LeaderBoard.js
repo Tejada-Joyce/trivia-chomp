@@ -15,7 +15,7 @@ const LeaderBoard = () => {
       const usersArray = Object.entries(usersObj).map(([key, value]) => {
         return { id: key, ...value };
       });
-      setUsersData(usersArray);
+      setUsersData(usersArray.filter(user => user.questions));
     };
 
     getAllUsers({ url: usersDataUrl }, formatData);

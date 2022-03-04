@@ -1,6 +1,7 @@
 import { da } from "date-fns/locale";
 import { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import useHttp from "../../hooks/use-http";
 import AuthContext from "../../store/auth-contex";
 
 import classes from "./AuthForm.module.css";
@@ -11,6 +12,7 @@ const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const authCtx = useContext(AuthContext);
+  const { isLoading, httpError, sendRequest } = useHttp()
 
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState({ error: false, message: "" });
@@ -108,7 +110,31 @@ const AuthForm = () => {
         .then((data) => {
           //Successful signup
           authCtx.login(data);
-          navigate("/");
+          if (!isLogin) {
+            //create new user object
+            
+            const newUserObject = {
+              [data.localId]: {
+                email: data.email
+              }
+              
+            }
+
+            sendRequest({
+              url: 'https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users.json',
+              method: 'PATCH',
+              body: newUserObject,
+              headers: {'Content-Type': 'application/json'}
+            }, (data) => console.log(data))
+            if (httpError) {
+              console.log(httpError)
+            }
+          }
+          if (isLogin) {
+            navigate("/");
+          } else {
+            navigate("/?newUser=true")
+          }
         });
     }
   };

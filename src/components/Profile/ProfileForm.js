@@ -23,12 +23,11 @@ const ProfileForm = ({ onClose }) => {
   };
   const avatarChangeHandler = (e) => {
     setSelectedOption(e.target.value);
-    console.log(e.target.value);
+
     setAvatar(e.target.value);
   };
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(username, avatar);
     onClose();
     toast({
       title: "Profile set successfully!",
