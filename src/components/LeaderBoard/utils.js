@@ -7,10 +7,10 @@ const formatData = (objs) => {
 
 export const sortDataByPoints = (objs) => {
   const sortedData = [...objs].sort((a, b) => {
-    if (b.points < a.points) {
+    if (b?.points < a?.points) {
       return -1;
-    } else if (a.points === b.points) {
-      if (a.accuracy < b.accuracy) {
+    } else if (a?.points === b?.points) {
+      if (a?.accuracy < b?.accuracy) {
         return -1;
       } else {
         return 1;
@@ -28,30 +28,36 @@ export const filterDataByTime = (objs, time) => {
   switch (time.toLowerCase()) {
     case "day":
       filteredData = [...objs].map((obj) => {
-        const questions = formatData(obj.questions).filter(
+        const questions = formatData(obj?.questions || []).filter(
           (question) => format(today, "MM-dd-yyyy") === question.timestamp
         );
         return { ...obj, questions: questions };
       });
-      filteredData = filteredData.filter((obj) => obj.questions.length !== 0);
+      filteredData = filteredData.filter(
+        (obj) => (obj?.questions || []).length !== 0
+      );
       break;
     case "week":
       filteredData = [...objs].map((obj) => {
-        const questions = formatData(obj.questions).filter((question) =>
+        const questions = formatData(obj?.questions || []).filter((question) =>
           isThisWeek(new Date(question.timestamp))
         );
         return { ...obj, questions: questions };
       });
-      filteredData = filteredData.filter((obj) => obj.questions.length !== 0);
+      filteredData = filteredData.filter(
+        (obj) => (obj?.questions || []).length !== 0
+      );
       break;
     case "month":
       filteredData = [...objs].map((obj) => {
-        const questions = formatData(obj.questions).filter((question) =>
+        const questions = formatData(obj?.questions || []).filter((question) =>
           isThisMonth(new Date(question.timestamp))
         );
         return { ...obj, questions: questions };
       });
-      filteredData = filteredData.filter((obj) => obj.questions.length !== 0);
+      filteredData = filteredData.filter(
+        (obj) => (obj?.questions || []).length !== 0
+      );
       break;
     default:
       break;
@@ -60,15 +66,15 @@ export const filterDataByTime = (objs, time) => {
 };
 
 export const formatUserData = (user) => {
-  const questionsTaken = user.questions.length;
+  const questionsTaken = user?.questions.length;
   let points = 0;
-  user.questions.forEach((question) => {
+  user?.questions.forEach((question) => {
     if (question.isCorrect) points++;
   });
   const accuracy = ((points * 100) / questionsTaken).toFixed(1);
   return {
     id: user.id,
-    username: user.username,
+    username: user?.username,
     avatar: user.avatar,
     accuracy: `${accuracy}%`,
     questionsTaken: user.questions.length,
