@@ -1,5 +1,5 @@
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
-import { Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Flex, Heading, Text } from "@chakra-ui/react";
 import ProfileCardModal from "../components/Profile/ProfileCardModal";
 import QuizSetupModal from "../components/quiz/QuizSetupModal";
 import QuizStartButton from "../components/quiz/QuizStartButton";
@@ -22,10 +22,9 @@ const Home = () => {
           <Text textAlign="center" mt="10px">
             Today is a good day to do some trivia.
           </Text>
-          {/* <ProfileCardModal /> */}
           <QuizSetupModal isOpen={quizSetupModalIsOpen} />
           <QuizStartButton onClick={onOpenQuizSetupModal} />
-          {/* <ProfileCardModal /> */}
+          <ProfileCardModal />
         </Background>
         <LeaderBoard />
       </div>
