@@ -9,24 +9,26 @@ import { useState } from "react";
 const Home = () => {
   const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
   const onOpenQuizSetupModal = () => {
-    setQuizSetupModalIsOpen(true)
-  }
+    setQuizSetupModalIsOpen(true);
+  };
 
   return (
     <Flex flexDir="column" justify="space-between" h="100%">
-
       <div>
         <Background>
-          <Heading as="h1" textAlign="center">Welcome to TriviaChomp!</Heading>
-          <Text textAlign="center" mt="10px">Today is a good day to do some trivia.</Text>
+          <Heading as="h1" textAlign="center">
+            Welcome to TriviaChomp!
+          </Heading>
+          <Text textAlign="center" mt="10px">
+            Today is a good day to do some trivia.
+          </Text>
           {/* <ProfileCardModal /> */}
-          <QuizSetupModal isOpen={quizSetupModalIsOpen}/>
-            <QuizStartButton onClick={onOpenQuizSetupModal} />
-            <ProfileCardModal />
-          </Background>
-          <LeaderBoard />
+          <QuizSetupModal isOpen={quizSetupModalIsOpen} />
+          <QuizStartButton onClick={onOpenQuizSetupModal} />
+          {/* <ProfileCardModal /> */}
+        </Background>
+        <LeaderBoard />
       </div>
-
     </Flex>
   );
 };
