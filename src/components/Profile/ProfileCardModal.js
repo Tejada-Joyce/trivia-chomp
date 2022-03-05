@@ -6,15 +6,18 @@ import {
   ModalBody,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useContext, useCallback } from "react";
 import ProfileForm from "./ProfileForm";
+import AuthContext from "../../store/auth-contex";
 
 const ProfileCardModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const authCtx = useContext(AuthContext)
+  const username = authCtx?.username;
 
   useEffect(() => {
-    onOpen();
-  }, [onOpen]);
+    if (!username) onOpen();
+  }, [onOpen, username]);
 
   return (
     <>
@@ -30,7 +33,7 @@ const ProfileCardModal = () => {
           <ModalHeader fontSize="3xl" textAlign="center">
             Set Your Profile
           </ModalHeader>
-          <ModalBody pb={6}>
+          <ModalBody pb={6} textAlign="center">
             <ProfileForm onClose={onClose} />
           </ModalBody>
         </ModalContent>
