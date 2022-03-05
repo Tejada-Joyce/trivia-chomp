@@ -11,6 +11,7 @@ import AuthContext from "../store/auth-contex";
 const Home = () => {
   const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
   const { isLoading, error, sendRequest: getUserData } = useHttp();
+  const [showModal, setShowModal] = useState(false);
   const authCtx = useContext(AuthContext)
   const onOpenQuizSetupModal = () => {
     setQuizSetupModalIsOpen(true);
@@ -21,6 +22,7 @@ const Home = () => {
     //get other user data
     const callback = (data) => {
       authCtx.updateUserData(data)
+      setShowModal(true)
     }
     getUserData({url: `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`}, callback)
     
@@ -38,7 +40,7 @@ const Home = () => {
           </Text>
           <QuizSetupModal isOpen={quizSetupModalIsOpen} />
           <QuizStartButton onClick={onOpenQuizSetupModal} />
-          <ProfileCardModal />
+          {showModal && <ProfileCardModal />}
         </Background>
         <LeaderBoard />
       </div>
