@@ -1,7 +1,7 @@
-import { da } from "date-fns/locale";
 import { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../store/auth-contex";
+import { auth, provider } from "../../config/firebase";
 
 import classes from "./AuthForm.module.css";
 
@@ -24,6 +24,19 @@ const AuthForm = () => {
   //Validate the email function
   const validEmail = (email) => {
     return /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}/.test(email);
+  };
+
+  //Login with Google buttons
+  const handleLoginGoogle = (event) => {
+    event.preventDefault();
+    auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   //Handle the form submission with the checks in place
@@ -120,14 +133,29 @@ const AuthForm = () => {
       <form onSubmit={submitHandler} noValidate>
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" ref={emailInputRef}/>
+          <input type="email" id="email" ref={emailInputRef} />
         </div>
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
-          <input type="password" id="password" ref={passwordInputRef}/>
+          <input type="password" id="password" ref={passwordInputRef} />
         </div>
         <div className={classes.actions}>
           <button>{isLogin ? "Login" : "Create Account"}</button>
+          {isLogin && (
+            <>
+              <br></br>
+              <button className="google-btn" onClick={handleLoginGoogle}>
+                <img
+                  className="google-icon"
+                  src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                  alt="GoogleLogo"
+                />
+                <span className="btn-text">
+                  <b>&nbsp;&nbsp;Sign in with google</b>
+                </span>
+              </button>
+            </>
+          )}
           <button
             type="button"
             className={classes.toggle}
