@@ -2,8 +2,8 @@ import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../store/auth-contex";
 
-import { Flex, IconButton, Spacer, Link, Text } from "@chakra-ui/react";
-import { FaUser } from "react-icons/fa";
+import { Flex, IconButton, Spacer, Link, Text, Avatar } from "@chakra-ui/react";
+import dinosaurs from '../../images/index'
 
 const Nav = () => {
     //Authentication
@@ -16,6 +16,10 @@ const Nav = () => {
         authCtx.logout();
         navigate("/auth");
     };
+
+    //get avatar
+    const avatar = authCtx?.avatar.charAt(authCtx?.avatar.length - 1);
+    const image = dinosaurs[+avatar - 1];
 
     return (
         <Flex
@@ -41,11 +45,7 @@ const Nav = () => {
 
             <Flex flexDirection="column" alignItems="center">
                 <Link to={isLoggedIn ? '/profile' : '/auth'} as={ReactRouterLink} pr={2}>
-                    <IconButton
-                        icon={<FaUser size="30px" />}
-                        variant="link"
-                        size="lg"
-                    ></IconButton>
+                    <Avatar src={image}></Avatar>
 
                 </Link>
                 {isLoggedIn && (
