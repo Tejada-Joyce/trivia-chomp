@@ -6,12 +6,14 @@ import {
   ModalBody,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useContext, useCallback } from "react";
 import ProfileForm from "./ProfileForm";
+import AuthContext from "../../store/auth-contex";
 
 const ProfileCardModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const username = localStorage.getItem("trivia_displayName");
+  const authCtx = useContext(AuthContext)
+  const username = authCtx?.username;
 
   useEffect(() => {
     if (!username) onOpen();

@@ -126,6 +126,8 @@ const AuthForm = () => {
     }
   };
 
+
+
   //Form to be returned
   return (
     <section className={classes.auth}>
