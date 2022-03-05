@@ -3,7 +3,7 @@
 import Background from "../components/ui/Background";
 import { useParams } from "react-router";
 import useHttp from "../hooks/use-http";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Button,
   Progress,
@@ -24,6 +24,7 @@ import React from "react";
 import { CheckCircleIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
+import AuthContext from "../store/auth-contex";
 
 const decodeHTML = function (html) {
   var txt = document.createElement("textarea");
@@ -35,7 +36,7 @@ const Quiz = () => {
   const { isLoading, error, sendRequest } = useHttp();
   const { categoryId } = useParams();
   const navigate = useNavigate();
-
+  const authCtx = useContext(AuthContext)
   //questions from API
   const [questions, setQuestions] = useState([]);
   //index of where we are currently at
@@ -156,7 +157,7 @@ const Quiz = () => {
     } else {
       setFinished(true);
       //send data and trigger finished screen
-      const userId = "y8zdd2nangXfS6u1BsRuCLILVF42"; //replace with real user id once we have context set up
+      const userId = authCtx.userId
       const endpoint = `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}/questions.json`;
       questionData.forEach((answeredQuestion) => {
         sendRequest(

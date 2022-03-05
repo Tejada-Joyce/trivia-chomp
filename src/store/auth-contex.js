@@ -3,6 +3,9 @@ import React, { useState } from "react";
 const AuthContext = React.createContext({
   token: "",
   isLoggedIn: false,
+  userId: '',
+  userName: '',
+  avatar: '',
   login: () => {},
   logout: () => {},
 });
@@ -53,6 +56,7 @@ export const AuthContextProvider = (props) => {
   }
 
   const [token, setToken] = useState(initalToken);
+  const [userId, setUserId] = useState(null)
 
   const userIsLoggedIn = !!token;
 
@@ -67,6 +71,7 @@ export const AuthContextProvider = (props) => {
 
   const loginHandler = (userData) => {
     setToken(userData.idToken);
+    setUserId(userData.localId)
     localStorage.setItem("trivia_idToken", userData.idToken);
     localStorage.setItem("trivia_email", userData.email);
     localStorage.setItem("trivia_localId", userData.localId);
@@ -86,9 +91,11 @@ export const AuthContextProvider = (props) => {
   const contextValue = {
     token: token,
     isLoggedIn: userIsLoggedIn,
+    userId: userId,
     login: loginHandler,
     logout: logoutHandler,
   };
+
   return (
     <AuthContext.Provider value={contextValue}>
       {props.children}

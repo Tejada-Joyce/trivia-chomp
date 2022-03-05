@@ -11,8 +11,9 @@ import {
 } from "@chakra-ui/react";
 import AvatarCard from "./AvatarRadioButton";
 import dinosaurs from "../../images/index.js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import useHttp from "../../hooks/use-http";
+import AuthContext from "../../store/auth-contex";
 
 const ProfileForm = ({ onClose }) => {
   const [username, setUsername] = useState("");
@@ -21,11 +22,14 @@ const ProfileForm = ({ onClose }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "dinosaur",
   });
+  const authCtx = useContext(AuthContext)
+
   const group = getRootProps();
   const toast = useToast();
   const { isLoading, error, sendRequest: submitProfileData } = useHttp();
   // TODO: Get ID for second database here
-  const userId = "y9FWERAzfKeYaLx2frgoLSMOZ962";
+  
+  const userId = authCtx.userId
   const usersDataUrl = `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`;
 
   const usernameChangeHandler = (e) => {

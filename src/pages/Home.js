@@ -12,6 +12,12 @@ const Home = () => {
     setQuizSetupModalIsOpen(true);
   };
 
+  useEffect(() => {
+    //get other user data
+    
+    
+  }, [input]);
+
   return (
     <Flex flexDir="column" justify="space-between" h="100%">
       <div>
