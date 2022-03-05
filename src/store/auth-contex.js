@@ -7,7 +7,8 @@ const AuthContext = React.createContext({
   userName: '',
   avatar: '',
   login: () => {},
-  logout: () => {},
+  logout: () => { },
+  updateUserData: () => {}
 });
 
 //Clean local Storage
@@ -57,11 +58,16 @@ export const AuthContextProvider = (props) => {
 
   const [token, setToken] = useState(initalToken);
   const [userId, setUserId] = useState(null)
+  const [avatar, setAvatar] = useState('')
+  const [username, setUsername] = useState('')
 
   const userIsLoggedIn = !!token;
 
   const logoutHandler = () => {
     setToken(null);
+    setUserId(null)
+    setAvatar('')
+    setUsername('')
     cleanLocalStorage();
 
     if (logoutTimer) {
@@ -88,12 +94,24 @@ export const AuthContextProvider = (props) => {
     logoutTimer = setTimeout(logoutHandler, timeLeft);
   };
 
+  const updateUserData = (userData) => {
+    if (userData?.avatar) {
+      setAvatar(userData.avatar)
+    }
+    if (userData?.username) {
+      setUsername(userData.username)
+    }
+  }
+
   const contextValue = {
     token: token,
     isLoggedIn: userIsLoggedIn,
     userId: userId,
     login: loginHandler,
     logout: logoutHandler,
+    username: username,
+    avatar: avatar,
+    updateUserData: updateUserData
   };
 
   return (

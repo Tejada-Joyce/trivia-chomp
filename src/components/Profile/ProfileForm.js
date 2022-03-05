@@ -49,7 +49,10 @@ const ProfileForm = ({ onClose }) => {
       duration: "3000",
       isClosable: true,
     });
-    localStorage.setItem("trivia_displayName", username);
+    authCtx.updateUserData({
+      avatar: avatar,
+      username: username
+    })
   };
 
   const submitHandler = async (e) => {

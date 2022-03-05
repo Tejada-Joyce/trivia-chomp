@@ -4,26 +4,34 @@ import ProfileCardModal from "../components/Profile/ProfileCardModal";
 import QuizSetupModal from "../components/quiz/QuizSetupModal";
 import QuizStartButton from "../components/quiz/QuizStartButton";
 import Background from "../components/ui/Background";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import useHttp from "../hooks/use-http";
+import AuthContext from "../store/auth-contex";
 
 const Home = () => {
   const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
+  const { isLoading, error, sendRequest: getUserData } = useHttp();
+  const authCtx = useContext(AuthContext)
   const onOpenQuizSetupModal = () => {
     setQuizSetupModalIsOpen(true);
   };
+  const userId = authCtx.userId
 
   useEffect(() => {
     //get other user data
+    const callback = (data) => {
+      authCtx.updateUserData(data)
+    }
+    getUserData({url: `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`}, callback)
     
-    
-  }, [input]);
+  }, [userId, getUserData]);
 
   return (
     <Flex flexDir="column" justify="space-between" h="100%">
       <div>
         <Background>
           <Heading as="h1" textAlign="center">
-            Welcome to TriviaChomp!
+            Welcome to TriviaChomp, {authCtx.username}!
           </Heading>
           <Text textAlign="center" mt="10px">
             Today is a good day to do some trivia.
