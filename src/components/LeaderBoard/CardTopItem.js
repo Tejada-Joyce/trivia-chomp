@@ -2,7 +2,7 @@ import { Avatar, Grid, ListItem } from "@chakra-ui/react";
 import dinosaurs from "../../images/index.js";
 
 const CardTopItem = ({ user }) => {
-  const avatar = user.avatar.charAt(user.avatar.length - 1);
+  const avatar = user.avatar.slice(9);
   const image = dinosaurs[+avatar - 1];
   return (
     <Grid

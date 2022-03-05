@@ -1,5 +1,5 @@
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
-import { Flex, Heading, Text } from "@chakra-ui/react";
+import { Flex, Heading, Text, useDisclosure } from "@chakra-ui/react";
 import ProfileCardModal from "../components/Profile/ProfileCardModal";
 import QuizSetupModal from "../components/quiz/QuizSetupModal";
 import QuizStartButton from "../components/quiz/QuizStartButton";
@@ -9,23 +9,28 @@ import useHttp from "../hooks/use-http";
 import AuthContext from "../store/auth-contex";
 
 const Home = () => {
-  const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
+  // const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
+  // const onOpenQuizSetupModal = () => {
+  //   setQuizSetupModalIsOpen(true)
+  // }
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { isLoading, error, sendRequest: getUserData } = useHttp();
   const [showModal, setShowModal] = useState(false);
-  const authCtx = useContext(AuthContext)
-  const onOpenQuizSetupModal = () => {
-    setQuizSetupModalIsOpen(true);
-  };
-  const userId = authCtx.userId
+  const authCtx = useContext(AuthContext);
+  const userId = authCtx.userId;
 
   useEffect(() => {
     //get other user data
     const callback = (data) => {
-      authCtx.updateUserData(data)
-      setShowModal(true)
-    }
-    getUserData({url: `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`}, callback)
-    
+      authCtx.updateUserData(data);
+      setShowModal(true);
+    };
+    getUserData(
+      {
+        url: `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`,
+      },
+      callback
+    );
   }, [userId, getUserData]);
 
   return (
@@ -38,8 +43,9 @@ const Home = () => {
           <Text textAlign="center" mt="10px">
             Today is a good day to do some trivia.
           </Text>
-          <QuizSetupModal isOpen={quizSetupModalIsOpen} />
-          <QuizStartButton onClick={onOpenQuizSetupModal} />
+          <QuizSetupModal isOpen={isOpen} onClose={onClose} />
+          <QuizStartButton onClick={onOpen} />
+          <ProfileCardModal />
           {showModal && <ProfileCardModal />}
         </Background>
         <LeaderBoard />
