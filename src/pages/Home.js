@@ -45,7 +45,6 @@ const Home = () => {
           </Text>
           <QuizSetupModal isOpen={isOpen} onClose={onClose} />
           <QuizStartButton onClick={onOpen} />
-          <ProfileCardModal />
           {showModal && <ProfileCardModal />}
         </Background>
         <LeaderBoard />
