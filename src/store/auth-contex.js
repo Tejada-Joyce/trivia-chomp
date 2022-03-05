@@ -76,6 +76,7 @@ export const AuthContextProvider = (props) => {
   };
 
   const loginHandler = (userData) => {
+    if (!userData.idToken) return;
     setToken(userData.idToken);
     setUserId(userData.localId)
     localStorage.setItem("trivia_idToken", userData.idToken);
