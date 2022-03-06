@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "./store/auth-contex";
 
@@ -12,29 +12,28 @@ import AuthPage from "./pages/AuthPage";
 
 function App() {
   const authCtx = useContext(AuthContext);
-
+  console.log(authCtx);
   return (
     <ChakraProvider theme={theme}>
-      <Routes>
-        <Route path="/" element={<Layout/>}>
-        <Route path="auth" element={<AuthPage />} />
-        </Route>
-        {authCtx.isLoggedIn ? (
-          <Route path="/" element={<Layout />}>
-            {authCtx.isLoggedIn && <Route index element={<Home />} />}
-            {authCtx.isLoggedIn && (
-              <Route path="profile" element={<Profile />} />
-            )}
-            {authCtx.isLoggedIn && (
-              <Route path="quiz" element={<Quiz />}>
+      <Layout>
+        <Routes>
+          {authCtx.isLoggedIn ? (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/quiz" element={<Quiz />}>
                 <Route path=":categoryId" element={<Quiz />} />
               </Route>
-            )}
-          </Route>
-        ) : (
-          <Route path="/" element={<AuthPage />} />
-        )}
-      </Routes>
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<Navigate replace to="/auth" />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="*" element={<Navigate replace to="/auth" />} />
+            </>
+          )}
+        </Routes>
+      </Layout>
     </ChakraProvider>
   );
 }
