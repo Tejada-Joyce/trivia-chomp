@@ -41,20 +41,17 @@ const Nav = () => {
 
       <Spacer />
 
-      <Flex flexDirection="column" alignItems="center">
-        <Link
-          to={isLoggedIn ? "/profile" : "/auth"}
-          as={ReactRouterLink}
-          pr={2}
-        >
-          <Avatar src={image}></Avatar>
-        </Link>
-        {isLoggedIn && (
+      {isLoggedIn && (
+        <Flex flexDirection="column" alignItems="center">
+          <Link to="/profile" as={ReactRouterLink} pr={2}>
+            <Avatar src={image}></Avatar>
+          </Link>
+
           <button onClick={logoutHandler}>
             Logout <i className={"fa-solid fa-right-from-bracket"}></i>
           </button>
-        )}
-      </Flex>
+        </Flex>
+      )}
     </Flex>
   );
 };
