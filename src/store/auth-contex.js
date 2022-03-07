@@ -3,12 +3,12 @@ import React, { useState } from "react";
 const AuthContext = React.createContext({
   token: "",
   isLoggedIn: false,
-  userId: '',
-  userName: '',
-  avatar: '',
+  userId: "",
+  userName: "",
+  avatar: "",
   login: () => {},
-  logout: () => { },
-  updateUserData: () => {}
+  logout: () => {},
+  updateUserData: () => {},
 });
 
 //Clean local Storage
@@ -57,17 +57,17 @@ export const AuthContextProvider = (props) => {
   }
 
   const [token, setToken] = useState(initalToken);
-  const [userId, setUserId] = useState(null)
-  const [avatar, setAvatar] = useState('')
-  const [username, setUsername] = useState('')
+  const [userId, setUserId] = useState(null);
+  const [avatar, setAvatar] = useState("");
+  const [username, setUsername] = useState("");
 
   const userIsLoggedIn = !!token;
 
   const logoutHandler = () => {
     setToken(null);
-    setUserId(null)
-    setAvatar('')
-    setUsername('')
+    setUserId(null);
+    setAvatar("");
+    setUsername("");
     cleanLocalStorage();
 
     if (logoutTimer) {
@@ -78,7 +78,7 @@ export const AuthContextProvider = (props) => {
   const loginHandler = (userData) => {
     if (!userData.idToken) return;
     setToken(userData.idToken);
-    setUserId(userData.localId)
+    setUserId(userData.localId);
     localStorage.setItem("trivia_idToken", userData.idToken);
     localStorage.setItem("trivia_email", userData.email);
     localStorage.setItem("trivia_localId", userData.localId);
@@ -97,12 +97,12 @@ export const AuthContextProvider = (props) => {
 
   const updateUserData = (userData) => {
     if (userData?.avatar) {
-      setAvatar(userData.avatar)
+      setAvatar(userData.avatar);
     }
     if (userData?.username) {
-      setUsername(userData.username)
+      setUsername(userData.username);
     }
-  }
+  };
 
   const contextValue = {
     token: token,
@@ -112,7 +112,7 @@ export const AuthContextProvider = (props) => {
     logout: logoutHandler,
     username: username,
     avatar: avatar,
-    updateUserData: updateUserData
+    updateUserData: updateUserData,
   };
 
   return (
