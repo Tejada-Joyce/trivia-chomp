@@ -44,7 +44,6 @@ const AuthForm = () => {
     auth
       .signInWithPopup(provider)
       .then((result) => {
-        console.log(result);
         const data = {
           idToken: result.credential.idToken,
           localId: result.user.uid,
