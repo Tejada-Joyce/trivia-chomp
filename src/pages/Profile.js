@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Avatar, Center, Divider, Heading, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 import useHttp from "../hooks/use-http";
 import dinosaurs from "../images/index";
+import { matchRoutes } from "react-router";
 
 
 const Profile = () => {
@@ -61,7 +62,7 @@ const Profile = () => {
           <StatNumber>{correctAnswered}</StatNumber>
           <StatHelpText>
             <StatArrow type="increase"></StatArrow>
-            {(totalQuestionsAnswered > 0) ? correctAnswered * 100 / totalQuestionsAnswered :'--' }%
+            {(totalQuestionsAnswered > 0) ? Math.round(correctAnswered * 1000 / totalQuestionsAnswered) / 100 :'--' }%
           </StatHelpText>
         </Stat>
         <Stat>
@@ -69,7 +70,7 @@ const Profile = () => {
           <StatNumber>{incorrectAnswered}</StatNumber>
           <StatHelpText>
             <StatArrow type="decrease"></StatArrow>
-            {(totalQuestionsAnswered > 0) ? incorrectAnswered * 100 / totalQuestionsAnswered :'--' }%
+            {(totalQuestionsAnswered > 0) ? Math.round(incorrectAnswered * 1000 / totalQuestionsAnswered)/100 :'--' }%
           </StatHelpText>
           </Stat>
       </StatGroup>
