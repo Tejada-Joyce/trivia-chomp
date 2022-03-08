@@ -1,10 +1,11 @@
 import { Box } from "@chakra-ui/react";
+import background from "../../images/sun-tornado.svg";
 import Nav from "./Nav";
 
 const Layout = (props) => {
   return (
     <Box
-      bgImage="url('sun-tornado.svg')"
+      bgImage={`url(${background})`}
       bgRepeat="no-repeat"
       minHeight="100vh"
       h="100%"
