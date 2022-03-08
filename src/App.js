@@ -12,7 +12,7 @@ import AuthPage from "./pages/AuthPage";
 
 function App() {
   const authCtx = useContext(AuthContext);
-  console.log(authCtx);
+
   return (
     <ChakraProvider theme={theme}>
       <Layout>
