@@ -30,6 +30,8 @@ const ProfileForm = ({ onClose }) => {
   const { isLoading, error, sendRequest: submitProfileData } = useHttp();
   const usersDataUrl = `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`;
 
+  const [userExistError, setUserExistError] = useState({ exist: false, message: "" });
+
   const usernameChangeHandler = (e) => {
     setUsername(e.target.value);
   };
@@ -53,23 +55,39 @@ const ProfileForm = ({ onClose }) => {
     });
   };
 
+  const checkUserNameExist = async (name) => {
+    let returnValue = false;
+    await fetch(`https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users.json?orderBy=%22username%22&equalTo=%22${name}%22`)
+      .then(res => {
+        returnValue = true;
+      })
+    return returnValue;
+  }
+
   const submitHandler = async (e) => {
     e.preventDefault();
     const body = {
       username: username,
       avatar: avatar,
     };
-    await submitProfileData(
-      {
-        url: usersDataUrl,
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
-      },
-      addDataContext.bind()
-    );
+
+    checkUserNameExist(username).then(data => {
+      if (data) {
+        return setUserExistError({exist: true, message: "User Exist!"});
+      } else {
+        submitProfileData(
+          {
+            url: usersDataUrl,
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: body,
+          },
+          addDataContext.bind()
+        );
+      }
+    })
   };
 
   useEffect(() => {
@@ -105,6 +123,7 @@ const ProfileForm = ({ onClose }) => {
         <FormLabel htmlFor="avatar" fontSize="md" textAlign="center">
           Pick Your Avatar
         </FormLabel>
+        <h1>{userExistError.message + " " + userExistError.exist}</h1>
         <Grid
           {...group}
           name="dinosaur"
