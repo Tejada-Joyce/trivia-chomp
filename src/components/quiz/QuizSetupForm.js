@@ -47,7 +47,7 @@ export default function QuizSetupForm() {
                 
             </Select>
             <Divider height="1.5rem" borderColor="transparent" />
-            <Button type="submit" colorScheme="blue" width="100%">
+            <Button type="submit" background="gold" color="indigo" width="100%" _hover={{ backgroundColor: '#ddb902'}}>
                 Go
             </Button>
         </FormControl>

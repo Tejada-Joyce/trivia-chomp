@@ -22,13 +22,14 @@ export default function QuizSetupModal(props) {
         onClose={props.onClose}
         closeOnEsc="true"
         closeOnOverlayClick="true"
+        
       >
         <ModalOverlay onClick={closeHandler} />
         <ModalContent>
-          <ModalHeader fontSize="3xl" textAlign="center">
+          <ModalHeader fontSize="3xl" textAlign="center" >
             Quiz
           </ModalHeader>
-          <ModalBody pb={6}>
+          <ModalBody pb={6} >
             <QuizSetupForm />
           </ModalBody>
         </ModalContent>

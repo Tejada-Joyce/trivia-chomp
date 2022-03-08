@@ -30,7 +30,7 @@ const Nav = () => {
       h="100%"
       bg="rgba(0, 0, 0, .5)"
     >
-      <Link to={isLoggedIn ? "/" : "auth"} as={ReactRouterLink}>
+      <Link to={isLoggedIn ? "/" : "auth"} as={ReactRouterLink} _hover={{textDecoration: 'none'}}>
         <Text display="inline" fontSize="2em" fontWeight="light">
           Trivia
         </Text>

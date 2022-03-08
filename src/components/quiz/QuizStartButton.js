@@ -11,5 +11,6 @@ export default function QuizStartButton(props) {
         h="50px"
         display="block"
         onClick={props.onClick}
+        _hover={{ backgroundColor: '#ddb902'}}
     >Take a Quiz</Button>
 }
