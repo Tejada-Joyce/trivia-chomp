@@ -17,15 +17,15 @@ const AuthForm = () => {
 
   //Login BTN
   const switchToLogin = () => {
-    setIsLogin(true)
+    setIsLogin(true);
     setError({ error: false, message: "" });
-  }
+  };
 
   //Signup BTN
   const switchToSignUp = () => {
-    setIsLogin(false)
+    setIsLogin(false);
     setError({ error: false, message: "" });
-  }
+  };
 
   //Validate the email function
   const validEmail = (email) => {
@@ -34,8 +34,10 @@ const AuthForm = () => {
 
   //Successful signup
   const setAuthCtx = (data) => {
-    authCtx.login(data);
-    navigate("/");
+    if (data) {
+      authCtx.login(data);
+      navigate("/");
+    }
   };
 
   //Login with Google buttons
@@ -92,6 +94,12 @@ const AuthForm = () => {
           message: "Invalid email or password!",
         });
         break;
+        case "TOO_MANY_ATTEMPTS_TRY_LATER : Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.":
+          setError({
+            error: true,
+            message: "To many attempts! Please try later!",
+          });
+          break;
       default:
         setError({
           error: true,
@@ -124,31 +132,35 @@ const AuthForm = () => {
       }
 
       //Login or Signup request
-      fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          email: enteredEmail,
-          password: enteredPassword,
-          returnSecureToken: true,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => {
-          if (res.ok) {
-            setError({ error: false, message: "" });
-            return res.json();
-          } else {
-            res.json().then((data) => {
-              errorHandlerAuth(data.error.message);
-            });
-          }
+        fetch(url, {
+          method: "POST",
+          body: JSON.stringify({
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .then((data) => {
-          setAuthCtx(data);
-        });
-    }
+          .then((res) => {
+            if (res.ok) {
+              setError({ error: false, message: "" });
+              return res.json();
+            } else {
+              res.json().then((data) => {
+                console.log(data.error.message)
+                errorHandlerAuth(data.error.message);
+              });
+            }
+          })
+          .then((data) => {
+            setAuthCtx(data);
+          }).catch(err => {
+            console.log(err)
+            //TODO Work on with that error on the console.
+          });
+      }
   };
 
   //Form to be returned
@@ -156,8 +168,26 @@ const AuthForm = () => {
     <section className={classes.auth}>
       <div className={classes.tabForm}>
         <div className={classes.tab}>
-          <button className= {isLogin ? classes.tablinks + ' ' + classes.active : classes.tablinks} onClick={switchToLogin}>Login</button>
-          <button className= {!isLogin ? classes.tablinks + ' ' + classes.active : classes.tablinks} onClick={switchToSignUp}>Signup</button>
+          <button
+            className={
+              isLogin
+                ? classes.tablinks + " " + classes.active
+                : classes.tablinks
+            }
+            onClick={switchToLogin}
+          >
+            Login
+          </button>
+          <button
+            className={
+              !isLogin
+                ? classes.tablinks + " " + classes.active
+                : classes.tablinks
+            }
+            onClick={switchToSignUp}
+          >
+            Signup
+          </button>
         </div>
         <form onSubmit={submitHandler} noValidate>
           <div className={classes.control}>
@@ -184,7 +214,11 @@ const AuthForm = () => {
               </span>
             </button>
             <br></br>
-            {error.error ? <span className={classes.errorMessage}>{error.message}</span> : ""}
+            {error.error ? (
+              <span className={classes.errorMessage}>{error.message}</span>
+            ) : (
+              ""
+            )}
           </div>
         </form>
       </div>
