@@ -149,7 +149,6 @@ const AuthForm = () => {
               return res.json();
             } else {
               res.json().then((data) => {
-                console.log(data.error.message)
                 errorHandlerAuth(data.error.message);
               });
             }
