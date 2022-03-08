@@ -4,7 +4,7 @@ const AuthContext = React.createContext({
   token: "",
   isLoggedIn: false,
   userId: "",
-  userName: "",
+  username: "",
   avatar: "",
   login: () => {},
   logout: () => {},
@@ -14,9 +14,9 @@ const AuthContext = React.createContext({
 //Clean local Storage
 const cleanLocalStorage = () => {
   localStorage.removeItem("trivia_idToken");
-  localStorage.removeItem("trivia_email");
   localStorage.removeItem("trivia_localId");
-  localStorage.removeItem("trivia_displayName");
+  localStorage.removeItem("trivia_username");
+  localStorage.removeItem("trivia_avatar");
   localStorage.removeItem("trivia_expirationTime");
 };
 
@@ -32,7 +32,10 @@ const calculateTimeLeft = (expirationTime) => {
   return remainingTime;
 };
 
-const retrieveStoredToken = () => {
+const retrieveStoredUserData = () => {
+  const storedUserId = localStorage.getItem("trivia_localId");
+  const storedUsername = localStorage.getItem("trivia_username");
+  const storedAvatar = localStorage.getItem("trivia_avatar");
   const storedToken = localStorage.getItem("trivia_idToken");
   const storedExpirationDate = localStorage.getItem("trivia_expirationTime");
 
@@ -44,22 +47,23 @@ const retrieveStoredToken = () => {
   }
 
   return {
-    token: storedToken,
-    duration: storedExpirationDate,
+    userId: storedUserId,
+    username: storedUsername,
+    avatar: storedAvatar,
+    tokenData: {
+      token: storedToken,
+      duration: storedExpirationDate,
+    },
   };
 };
 
 export const AuthContextProvider = (props) => {
-  const tokenData = retrieveStoredToken();
-  let initalToken;
-  if (tokenData) {
-    initalToken = tokenData;
-  }
+  const userData = retrieveStoredUserData();
 
-  const [token, setToken] = useState(initalToken);
-  const [userId, setUserId] = useState(null);
-  const [avatar, setAvatar] = useState("");
-  const [username, setUsername] = useState("");
+  const [token, setToken] = useState(userData?.tokenData || null);
+  const [userId, setUserId] = useState(userData?.userId || null);
+  const [avatar, setAvatar] = useState(userData?.avatar || "");
+  const [username, setUsername] = useState(userData?.username || "");
 
   const userIsLoggedIn = !!token;
 
@@ -80,11 +84,9 @@ export const AuthContextProvider = (props) => {
     setToken(userData.idToken);
     setUserId(userData.localId);
     localStorage.setItem("trivia_idToken", userData.idToken);
-    localStorage.setItem("trivia_email", userData.email);
     localStorage.setItem("trivia_localId", userData.localId);
-    localStorage.setItem("trivia_displayName", userData.displayName);
 
-    //Expeiration time
+    //Expiration time
     const expires = new Date(
       new Date().getTime() + +userData.expiresIn * 1000
     ).toISOString();
@@ -98,9 +100,11 @@ export const AuthContextProvider = (props) => {
   const updateUserData = (userData) => {
     if (userData?.avatar) {
       setAvatar(userData.avatar);
+      localStorage.setItem("trivia_avatar", userData.avatar);
     }
     if (userData?.username) {
       setUsername(userData.username);
+      localStorage.setItem("trivia_username", userData.username);
     }
   };
 
@@ -108,10 +112,10 @@ export const AuthContextProvider = (props) => {
     token: token,
     isLoggedIn: userIsLoggedIn,
     userId: userId,
-    login: loginHandler,
-    logout: logoutHandler,
     username: username,
     avatar: avatar,
+    login: loginHandler,
+    logout: logoutHandler,
     updateUserData: updateUserData,
   };
 
