@@ -22,14 +22,12 @@ const ProfileForm = ({ onClose }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "dinosaur",
   });
-  const authCtx = useContext(AuthContext)
-
   const group = getRootProps();
   const toast = useToast();
+
+  const authCtx = useContext(AuthContext);
+  const userId = authCtx.userId;
   const { isLoading, error, sendRequest: submitProfileData } = useHttp();
-  // TODO: Get ID for second database here
-  
-  const userId = authCtx.userId
   const usersDataUrl = `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}.json`;
 
   const usernameChangeHandler = (e) => {
@@ -51,8 +49,8 @@ const ProfileForm = ({ onClose }) => {
     });
     authCtx.updateUserData({
       avatar: avatar,
-      username: username
-    })
+      username: username,
+    });
   };
 
   const submitHandler = async (e) => {
