@@ -19,12 +19,19 @@ import {
   Heading,
   Text,
   Box,
+  Avatar,
 } from "@chakra-ui/react";
 import React from "react";
 import { CheckCircleIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import Confetti from "react-confetti";
+import useSound from "use-sound";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import AuthContext from "../store/auth-contex";
+import dinosaurs from "../images/index";
+import errorSound from "../assets/sounds/error.mp3"
+import successSound from "../assets/sounds/success1.mp3"
+
 
 const decodeHTML = function (html) {
   var txt = document.createElement("textarea");
@@ -61,6 +68,13 @@ const Quiz = () => {
   // }
   const [questionData, setQuestionData] = useState([]);
   const [finished, setFinished] = useState(false);
+
+  const [beep] = useSound(errorSound);
+  const [win] = useSound(successSound);
+
+  const avatar = authCtx.avatar;
+  const avatarNum = avatar.slice(9);
+  const image = dinosaurs[+avatarNum - 1]; 
 
   let category = "";
   if (categoryId !== "random") {
@@ -115,7 +129,7 @@ const Quiz = () => {
 
   const possibleAnswers = answers.map((answer, index) => {
     return (
-      <Radio key={index} value={index.toString()}>
+      <Radio size="lg"key={index} value={index.toString()}>
         {decodeHTML(answer)}
       </Radio>
     );
@@ -131,8 +145,10 @@ const Quiz = () => {
     setUserChoice(userAnswer);
     if (userAnswer === correctAnswer) {
       //give user feedback
+      win();
       setIsCorrect(1);
     } else {
+      beep()
       setIsCorrect(0);
     }
   };
@@ -175,18 +191,19 @@ const Quiz = () => {
 
   //set content
   let content = (
-    <div>
-      <Progress value={(curQuestion + 1) * 10} />
-      {answered && (
+    <Box >
+      <Heading textAlign="center" as="h2" mb="20px" size="md" >Category: {questions[curQuestion]?.category}</Heading>
+      <Progress value={(curQuestion + 1) * 10} mb="10px" borderRadius="10px" colorScheme="purple"/>
+      {answered ? (
         <Alert variant="solid" status={isCorrect ? "success" : "error"}>
           <AlertDescription>
             {isCorrect ? "Correct!" : "Incorrect"}
           </AlertDescription>
         </Alert>
-      )}
+      ) : <Box height="48px"></Box>}
+      
       <form onSubmit={submitQuestionHandler}>
-        <p>Category: {questions[curQuestion]?.category}</p>
-        <p>{decodeHTML(questions[curQuestion]?.question)}</p>
+        <Text mb="10px" fontSize="2xl">{decodeHTML(questions[curQuestion]?.question)}</Text>
         {!answered && (
           <RadioGroup
             name="answer"
@@ -226,17 +243,17 @@ const Quiz = () => {
         )}
 
         {!answered && (
-          <Button bg="gold" color="black" mt={4} type="submit">
+          <Button bg="gold" color="black" mt={4} type="submit" _hover={{ backgroundColor: '#ddb902'}}>
             Submit
           </Button>
         )}
         {answered && (
-          <Button bg="gold" color="black" mt={4} onClick={nextQuestionHandler}>
+          <Button bg="gold" color="black" mt={4} onClick={nextQuestionHandler} _hover={{ backgroundColor: '#ddb902'}}>
             Next
           </Button>
         )}
       </form>
-    </div>
+    </Box>
   );
   if (error) {
     content = (
@@ -254,8 +271,10 @@ const Quiz = () => {
   if (finished) {
     content = (
       <Box textAlign="center">
+        <Confetti recycle="false" run="false"/>
+        <Avatar size="xl" m="10px" src={image}/>
         <Heading as="h1">QUIZ COMPLETE</Heading>
-        <Text fontSize="4xl">
+        <Text fontSize="4xl" m="20px">
           {questionData.reduce((total, curr) => {
             if (curr.isCorrect) {
               return total + 1;
@@ -264,13 +283,13 @@ const Quiz = () => {
           }, 0)}{" "}
           / {questions.length}
         </Text>
-        <Button onClick={playAgainHandler}>Finished</Button>
+        <Button onClick={playAgainHandler} bg="gold" color="black" _hover={{ backgroundColor: '#ddb902' }} m="10px">Finished</Button>
       </Box>
     );
   }
 
   return (
-    <Background>
+    <Background pt="20px">
       <div>{content}</div>
     </Background>
   );
