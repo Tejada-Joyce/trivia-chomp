@@ -2,7 +2,7 @@ import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../store/auth-contex";
 
-import { Flex, IconButton, Spacer, Link, Text, Avatar } from "@chakra-ui/react";
+import { Flex, Spacer, Link, Text, Avatar } from "@chakra-ui/react";
 import dinosaurs from "../../images/index";
 
 const Nav = () => {
