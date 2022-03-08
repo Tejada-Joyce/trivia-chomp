@@ -155,8 +155,7 @@ const AuthForm = () => {
           .then((data) => {
             setAuthCtx(data);
           }).catch(err => {
-            console.log(err)
-            //TODO Work on with that error on the console.
+            errorHandlerAuth(null);
           });
       }
   };
