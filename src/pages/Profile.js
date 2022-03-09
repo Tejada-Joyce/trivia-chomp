@@ -52,50 +52,55 @@ const Profile = () => {
   const image = dinosaurs[+avatarNum - 1];
 
   return (
-    <Background>
-      <Center>
-        <Avatar margin="auto" size="xl" src={image}></Avatar>
-      </Center>
-      <Heading as="h2" size="lg" textAlign="center">
-        {username}
-      </Heading>
-      <Heading as="h3" size="md">
-        Stats
-      </Heading>
-      <Divider m="5px 0"></Divider>
-      <StatGroup>
-        <Stat>
-          <StatLabel>Total Questions Answered</StatLabel>
-          <StatNumber>{totalQuestionsAnswered}</StatNumber>
-          <StatHelpText></StatHelpText>
-        </Stat>
-        <Stat>
-          <StatLabel>Correct</StatLabel>
-          <StatNumber>{correctAnswered}</StatNumber>
-          <StatHelpText>
-            <StatArrow type="increase"></StatArrow>
-            {totalQuestionsAnswered > 0
-              ? Math.round((correctAnswered * 1000) / totalQuestionsAnswered) /
-                100
-              : "--"}
-            %
-          </StatHelpText>
-        </Stat>
-        <Stat>
-          <StatLabel>Incorrect</StatLabel>
-          <StatNumber>{incorrectAnswered}</StatNumber>
-          <StatHelpText>
-            <StatArrow type="decrease"></StatArrow>
-            {totalQuestionsAnswered > 0
-              ? Math.round(
-                  (incorrectAnswered * 1000) / totalQuestionsAnswered
-                ) / 100
-              : "--"}
-            %
-          </StatHelpText>
-        </Stat>
-      </StatGroup>
-    </Background>
+    <>
+      {!isLoading && !error && (
+        <Background>
+          <Center>
+            <Avatar margin="auto" size="xl" src={image}></Avatar>
+          </Center>
+          <Heading as="h2" size="lg" textAlign="center">
+            {username}
+          </Heading>
+          <Heading as="h3" size="md">
+            Stats
+          </Heading>
+          <Divider m="5px 0"></Divider>
+          <StatGroup>
+            <Stat>
+              <StatLabel>Total Questions Answered</StatLabel>
+              <StatNumber>{totalQuestionsAnswered}</StatNumber>
+              <StatHelpText></StatHelpText>
+            </Stat>
+            <Stat>
+              <StatLabel>Correct</StatLabel>
+              <StatNumber>{correctAnswered}</StatNumber>
+              <StatHelpText>
+                <StatArrow type="increase"></StatArrow>
+                {totalQuestionsAnswered > 0
+                  ? Math.round(
+                      (correctAnswered * 1000) / totalQuestionsAnswered
+                    ) / 100
+                  : "--"}
+                %
+              </StatHelpText>
+            </Stat>
+            <Stat>
+              <StatLabel>Incorrect</StatLabel>
+              <StatNumber>{incorrectAnswered}</StatNumber>
+              <StatHelpText>
+                <StatArrow type="decrease"></StatArrow>
+                {totalQuestionsAnswered > 0
+                  ? Math.round(
+                      (incorrectAnswered * 1000) / totalQuestionsAnswered
+                    ) / 100
+                  : "--"}
+                %
+              </StatHelpText>
+            </Stat>
+          </StatGroup>
+        </Background>
+      )}
+    </>
   );
 };
 
