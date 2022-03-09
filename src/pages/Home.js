@@ -1,12 +1,5 @@
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
-import {
-  Flex,
-  Heading,
-  Text,
-  useDisclosure,
-  Divider,
-  Spinner,
-} from "@chakra-ui/react";
+import { Flex, Heading, Text, useDisclosure, Divider } from "@chakra-ui/react";
 import ProfileCardModal from "../components/Profile/ProfileCardModal";
 import QuizSetupModal from "../components/quiz/QuizSetupModal";
 import QuizStartButton from "../components/quiz/QuizStartButton";
@@ -20,7 +13,6 @@ const Home = () => {
   const { isLoading, error, sendRequest: getUserData } = useHttp();
   const [showModal, setShowModal] = useState(false);
   const authCtx = useContext(AuthContext);
-  const updateUserData = authCtx.updateUserData();
   const userId = authCtx.userId;
 
   useEffect(() => {
