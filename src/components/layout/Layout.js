@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import background from "../../images/sun-tornado.svg";
 import Nav from "./Nav";
 
@@ -13,14 +13,14 @@ const Layout = (props) => {
     >
       <Nav />
       <main>{props.children}</main>
-      <footer>
+      <Flex as="footer" p="10px" pb="20px" justifyContent="end">
         <a
           href="https://www.flaticon.com/free-icons/dinosaur"
           title="dinosaur icons"
         >
           Dinosaur icons created by Freepik - Flaticon
         </a>
-      </footer>
+      </Flex>
     </Box>
   );
 };

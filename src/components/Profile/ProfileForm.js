@@ -53,23 +53,33 @@ const ProfileForm = ({ onClose }) => {
     });
   };
 
+  const [userExist, setUserExist] = useState(false);
   const submitHandler = async (e) => {
     e.preventDefault();
     const body = {
       username: username,
       avatar: avatar,
     };
-    await submitProfileData(
-      {
-        url: usersDataUrl,
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
-      },
-      addDataContext.bind()
+
+    const response = await fetch(
+      `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users.json?orderBy=%22username%22&equalTo=%22${username}%22`
     );
+    const data = await response.json();
+    if (Object.keys(data).length === 0) {
+      await submitProfileData(
+        {
+          url: usersDataUrl,
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body,
+        },
+        addDataContext.bind()
+      );
+    } else {
+      setUserExist(true);
+    }
   };
 
   useEffect(() => {
@@ -94,6 +104,7 @@ const ProfileForm = ({ onClose }) => {
         <FormLabel htmlFor="username" fontSize="md" textAlign="center">
           Username
         </FormLabel>
+        <h1>{userExist && "User already exist. Please use a unique name!"}</h1>
         <Input
           id="username"
           placeholder="BestPlayer01"

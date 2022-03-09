@@ -1,5 +1,5 @@
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
-import { Flex, Heading, Text, useDisclosure } from "@chakra-ui/react";
+import { Flex, Heading, Text, useDisclosure, Divider } from "@chakra-ui/react";
 import ProfileCardModal from "../components/Profile/ProfileCardModal";
 import QuizSetupModal from "../components/quiz/QuizSetupModal";
 import QuizStartButton from "../components/quiz/QuizStartButton";
@@ -9,10 +9,6 @@ import useHttp from "../hooks/use-http";
 import AuthContext from "../store/auth-contex";
 
 const Home = () => {
-  // const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
-  // const onOpenQuizSetupModal = () => {
-  //   setQuizSetupModalIsOpen(true)
-  // }
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isLoading, error, sendRequest: getUserData } = useHttp();
   const [showModal, setShowModal] = useState(false);
@@ -34,22 +30,27 @@ const Home = () => {
   }, [userId, getUserData]);
 
   return (
-    <Flex flexDir="column" justify="space-between" h="100%">
-      <div>
-        <Background>
-          <Heading as="h1" textAlign="center">
-            Welcome to TriviaChomp, {authCtx.username}!
-          </Heading>
-          <Text textAlign="center" mt="10px">
-            Today is a good day to do some trivia.
-          </Text>
-          <QuizSetupModal isOpen={isOpen} onClose={onClose} />
-          <QuizStartButton onClick={onOpen} />
-          {showModal && <ProfileCardModal />}
-        </Background>
-        <LeaderBoard />
-      </div>
-    </Flex>
+    <>
+      {!isLoading && !error && (
+        <Flex flexDir="column" justify="space-between" h="100%">
+          <div>
+            <Background>
+              <Heading as="h1" textAlign="center">
+                Welcome to TriviaChomp, {authCtx.username}!
+              </Heading>
+              <Text textAlign="center" mt="10px">
+                Today is a good day to do some trivia.
+              </Text>
+              <QuizSetupModal isOpen={isOpen} onClose={onClose} />
+              <QuizStartButton onClick={onOpen} />
+              {showModal && <ProfileCardModal />}
+            </Background>
+            <Divider height="5px" borderColor="transparent" />
+            <LeaderBoard />
+          </div>
+        </Flex>
+      )}
+    </>
   );
 };
 
