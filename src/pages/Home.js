@@ -9,14 +9,11 @@ import useHttp from "../hooks/use-http";
 import AuthContext from "../store/auth-contex";
 
 const Home = () => {
-  // const [quizSetupModalIsOpen, setQuizSetupModalIsOpen] = useState(false);
-  // const onOpenQuizSetupModal = () => {
-  //   setQuizSetupModalIsOpen(true)
-  // }
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isLoading, error, sendRequest: getUserData } = useHttp();
   const [showModal, setShowModal] = useState(false);
   const authCtx = useContext(AuthContext);
+  const updateUserData = authCtx.updateUserData();
   const userId = authCtx.userId;
 
   useEffect(() => {
