@@ -34,7 +34,7 @@ const LeaderBoard = () => {
       templateColumns={["1fr", null, null, "repeat(3, 1fr)"]}
       maxW={["700px", null, null, "1000px"]}
       m="10px auto"
-      gap={3.5}
+      gap="22px"
     >
       {sortedUsers.map((users) => (
         <GridItem key={users.time} bg="rgba(0, 0, 0, .75)" p="20px 25px">

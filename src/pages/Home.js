@@ -1,5 +1,5 @@
 import LeaderBoard from "../components/LeaderBoard/LeaderBoard";
-import { Flex, Heading, Text, useDisclosure } from "@chakra-ui/react";
+import { Flex, Heading, Text, useDisclosure, Divider } from "@chakra-ui/react";
 import ProfileCardModal from "../components/Profile/ProfileCardModal";
 import QuizSetupModal from "../components/quiz/QuizSetupModal";
 import QuizStartButton from "../components/quiz/QuizStartButton";
@@ -44,6 +44,7 @@ const Home = () => {
           <QuizStartButton onClick={onOpen} />
           {showModal && <ProfileCardModal />}
         </Background>
+        <Divider height="5px" borderColor="transparent" />
         <LeaderBoard />
       </div>
     </Flex>
