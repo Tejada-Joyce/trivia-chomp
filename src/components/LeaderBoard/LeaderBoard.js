@@ -31,8 +31,8 @@ const LeaderBoard = () => {
   });
   return (
     <Grid
-      templateColumns={["1fr", "1fr", "repeat(3, 1fr)"]}
-      maxW="900px"
+      templateColumns={["1fr", null, null, "repeat(3, 1fr)"]}
+      maxW={["700px", null, null, "1000px"]}
       m="10px auto"
       gap={3.5}
     >
