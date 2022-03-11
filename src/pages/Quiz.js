@@ -29,9 +29,8 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import AuthContext from "../store/auth-contex";
 import dinosaurs from "../images/index";
-import errorSound from "../assets/sounds/error.mp3"
-import successSound from "../assets/sounds/success1.mp3"
-
+import errorSound from "../assets/sounds/error.mp3";
+import successSound from "../assets/sounds/success1.mp3";
 
 const decodeHTML = function (html) {
   var txt = document.createElement("textarea");
@@ -43,7 +42,7 @@ const Quiz = () => {
   const { isLoading, error, sendRequest } = useHttp();
   const { categoryId } = useParams();
   const navigate = useNavigate();
-  const authCtx = useContext(AuthContext)
+  const authCtx = useContext(AuthContext);
   //questions from API
   const [questions, setQuestions] = useState([]);
   //index of where we are currently at
@@ -74,7 +73,7 @@ const Quiz = () => {
 
   const avatar = authCtx.avatar;
   const avatarNum = avatar.slice(9);
-  const image = dinosaurs[+avatarNum - 1]; 
+  const image = dinosaurs[+avatarNum - 1];
 
   let category = "";
   if (categoryId !== "random") {
@@ -129,7 +128,7 @@ const Quiz = () => {
 
   const possibleAnswers = answers.map((answer, index) => {
     return (
-      <Radio size="lg"key={index} value={index.toString()}>
+      <Radio size="lg" key={index} value={index.toString()}>
         {decodeHTML(answer)}
       </Radio>
     );
@@ -148,7 +147,7 @@ const Quiz = () => {
       win();
       setIsCorrect(1);
     } else {
-      beep()
+      beep();
       setIsCorrect(0);
     }
   };
@@ -173,9 +172,10 @@ const Quiz = () => {
     } else {
       setFinished(true);
       //send data and trigger finished screen
-      const userId = authCtx.userId
+      const userId = authCtx.userId;
       const endpoint = `https://trivia-chomp-c5a02-default-rtdb.firebaseio.com/users/${userId}/questions.json`;
-      questionData.forEach((answeredQuestion) => {
+      const finalQuestionData = [...questionData, curQuestionData];
+      finalQuestionData.forEach((answeredQuestion) => {
         sendRequest(
           {
             url: endpoint,
@@ -191,19 +191,30 @@ const Quiz = () => {
 
   //set content
   let content = (
-    <Box >
-      <Heading textAlign="center" as="h2" mb="20px" size="md" >Category: {questions[curQuestion]?.category}</Heading>
-      <Progress value={(curQuestion + 1) * 10} mb="10px" borderRadius="10px" colorScheme="purple"/>
+    <Box>
+      <Heading textAlign="center" as="h2" mb="20px" size="md">
+        Category: {questions[curQuestion]?.category}
+      </Heading>
+      <Progress
+        value={(curQuestion + 1) * 10}
+        mb="10px"
+        borderRadius="10px"
+        colorScheme="purple"
+      />
       {answered ? (
         <Alert variant="solid" status={isCorrect ? "success" : "error"}>
           <AlertDescription>
             {isCorrect ? "Correct!" : "Incorrect"}
           </AlertDescription>
         </Alert>
-      ) : <Box height="48px"></Box>}
-      
+      ) : (
+        <Box height="48px"></Box>
+      )}
+
       <form onSubmit={submitQuestionHandler}>
-        <Text mb="10px" fontSize="2xl">{decodeHTML(questions[curQuestion]?.question)}</Text>
+        <Text mb="10px" fontSize="2xl">
+          {decodeHTML(questions[curQuestion]?.question)}
+        </Text>
         {!answered && (
           <RadioGroup
             name="answer"
@@ -243,12 +254,24 @@ const Quiz = () => {
         )}
 
         {!answered && (
-          <Button bg="gold" color="black" mt={4} type="submit" _hover={{ backgroundColor: '#ddb902'}}>
+          <Button
+            bg="gold"
+            color="black"
+            mt={4}
+            type="submit"
+            _hover={{ backgroundColor: "#ddb902" }}
+          >
             Submit
           </Button>
         )}
         {answered && (
-          <Button bg="gold" color="black" mt={4} onClick={nextQuestionHandler} _hover={{ backgroundColor: '#ddb902'}}>
+          <Button
+            bg="gold"
+            color="black"
+            mt={4}
+            onClick={nextQuestionHandler}
+            _hover={{ backgroundColor: "#ddb902" }}
+          >
             Next
           </Button>
         )}
@@ -271,8 +294,8 @@ const Quiz = () => {
   if (finished) {
     content = (
       <Box textAlign="center">
-        <Confetti recycle="false" run="false"/>
-        <Avatar size="xl" m="10px" src={image}/>
+        <Confetti recycle="false" run="false" />
+        <Avatar size="xl" m="10px" src={image} />
         <Heading as="h1">QUIZ COMPLETE</Heading>
         <Text fontSize="4xl" m="20px">
           {questionData.reduce((total, curr) => {
@@ -283,7 +306,15 @@ const Quiz = () => {
           }, 0)}{" "}
           / {questions.length}
         </Text>
-        <Button onClick={playAgainHandler} bg="gold" color="black" _hover={{ backgroundColor: '#ddb902' }} m="10px">Finished</Button>
+        <Button
+          onClick={playAgainHandler}
+          bg="gold"
+          color="black"
+          _hover={{ backgroundColor: "#ddb902" }}
+          m="10px"
+        >
+          Finished
+        </Button>
       </Box>
     );
   }
