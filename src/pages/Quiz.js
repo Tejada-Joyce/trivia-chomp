@@ -168,7 +168,7 @@ const Quiz = () => {
       setCurQuestion((prev) => prev + 1);
       setIsCorrect(0);
       setAnswered(false);
-      setValue(0);
+      setValue("0");
     } else {
       setFinished(true);
       //send data and trigger finished screen
