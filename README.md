@@ -1,5 +1,4 @@
 # Trivia Quiz
-_A React demo application_
 
 TriviaChomp is a quiz app that allows you to create an account, take quizzes on a category of your choice, and see how you are ranked in comparison to other players.
 
