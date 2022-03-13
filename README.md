@@ -1,8 +1,8 @@
-# Trivia Quiz
+# TriviaChomp
 
 TriviaChomp is a quiz app that allows you to create an account, take quizzes on a category of your choice, and see how you are ranked in comparison to other players.
 
-https://trivia-chomp.netlify.app/
+https://trivia-chomp.netlify.app
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
