@@ -3,7 +3,7 @@
 import Background from "../components/ui/Background";
 import { useParams } from "react-router";
 import useHttp from "../hooks/use-http";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useReducer } from "react";
 import {
   Button,
   Progress,
@@ -31,6 +31,7 @@ import AuthContext from "../store/auth-contex";
 import dinosaurs from "../images/index";
 import errorSound from "../assets/sounds/error.mp3";
 import successSound from "../assets/sounds/success1.mp3";
+import { questionReducer, userReducer } from "../hooks/reducers";
 
 const decodeHTML = function (html) {
   var txt = document.createElement("textarea");
@@ -38,34 +39,53 @@ const decodeHTML = function (html) {
   return txt.value;
 };
 
-const Quiz = () => {
-  const { isLoading, error, sendRequest } = useHttp();
-  const { categoryId } = useParams();
-  const navigate = useNavigate();
-  const authCtx = useContext(AuthContext);
+const initialQuestionsState = {
   //questions from API
-  const [questions, setQuestions] = useState([]);
-  //index of where we are currently at
-  const [curQuestion, setCurQuestion] = useState(0);
-  //chosen radio button index
-  const [value, setValue] = useState("0");
-  //possible answers for current question
-  const [answers, setAnswers] = useState([]);
-  //index of correct answer for current question
-  const [correctAnswer, setCorrectAnswer] = useState();
-  //the index of the choice the user picked
-  const [userChoice, setUserChoice] = useState(null);
-  //whether or not the user answered the current question correctly
-  const [isCorrect, setIsCorrect] = useState(0);
-  //whether or not the user answered
-  const [answered, setAnswered] = useState(false);
-  //an array of info about the questions as will be stored in our database :
+  questions: [],
+  // index of where we are currently at
+  curQuestionIdx: 0,
+  // an array of info about the questions as will be stored in our database :
   // {
   //   category: String,
   //   timestamp: Date,
   //   isCorrect: Boolean
   // }
-  const [questionData, setQuestionData] = useState([]);
+  questionData: [],
+  // possible answers for current question
+  possibleAnswers: [],
+  // index of correct answer for current question
+  correctAnswer: null,
+};
+
+const initialUserState = {
+  // the index of the choice the user picked
+  userChoice: null,
+  // whether or not the user answered the current question correctly
+  isCorrect: 0,
+  // whether or not the user answered
+  answered: false,
+};
+
+const Quiz = () => {
+  const { isLoading, error, sendRequest } = useHttp();
+  const { categoryId } = useParams();
+  const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
+  const [questionsState, questionsDispatch] = useReducer(
+    questionReducer,
+    initialQuestionsState
+  );
+  const {
+    questions,
+    curQuestionIdx,
+    questionData,
+    possibleAnswers,
+    correctAnswer,
+  } = questionsState;
+  const [userState, userDispatch] = useReducer(userReducer, initialUserState);
+  const { userChoice, isCorrect, answered } = userState;
+  //chosen radio button index
+  const [value, setValue] = useState("0");
   const [finished, setFinished] = useState(false);
 
   const [beep] = useSound(errorSound);
@@ -88,9 +108,7 @@ const Quiz = () => {
   };
 
   const playAgainHandler = () => {
-    setQuestions([]);
-    setCurQuestion(0);
-    setQuestionData([]);
+    questionsDispatch({ type: "SET_RESET" });
     setFinished(false);
     navigate(`/`, { replace: true });
   };
@@ -100,33 +118,40 @@ const Quiz = () => {
   //get data
   useEffect(() => {
     const applyData = (response) => {
-      setQuestions(response.results);
+      questionsDispatch({
+        type: "SET_QUESTIONS",
+        questions: response?.results,
+      });
     };
     sendRequest({ url: questionUrl }, applyData);
   }, [sendRequest, questionUrl]);
 
-  // set answers
+  // set possibleAnswers
   useEffect(() => {
     if (questions.length > 0) {
-      const currentQuestion = questions[curQuestion];
-      setAnswers((prev) => {
-        const newAnswers = currentQuestion.incorrect_answers;
-        newAnswers.push(currentQuestion.correct_answer);
-        newAnswers.sort((a, b) => 0.5 - Math.random());
-        return newAnswers.slice();
+      const currentQuestion = questions[curQuestionIdx];
+      const newAnswers = currentQuestion.incorrect_answers;
+      newAnswers.push(currentQuestion.correct_answer);
+      newAnswers.sort((a, b) => 0.5 - Math.random());
+      questionsDispatch({
+        type: "SET_CUR_POSIBLE_ANSWERS",
+        possibleAnswers: [...newAnswers],
       });
     }
-  }, [questions, curQuestion]);
+  }, [questions, curQuestionIdx]);
 
   useEffect(() => {
-    answers.forEach((answer, index) => {
-      if (answer === questions[curQuestion].correct_answer) {
-        setCorrectAnswer(index.toString());
+    possibleAnswers.forEach((answer, index) => {
+      if (answer === questions[curQuestionIdx].correct_answer) {
+        questionsDispatch({
+          type: "SET_CUR_CORRECT_ANSWER",
+          correctAnswer: index.toString(),
+        });
       }
     });
-  }, [answers, curQuestion, questions]);
+  }, [possibleAnswers, curQuestionIdx, questions]);
 
-  const possibleAnswers = answers.map((answer, index) => {
+  const options = possibleAnswers.map((answer, index) => {
     return (
       <Radio size="lg" key={index} value={index.toString()}>
         {decodeHTML(answer)}
@@ -139,35 +164,36 @@ const Quiz = () => {
   const submitQuestionHandler = (e) => {
     //find out which one had the correct answer
     e.preventDefault();
-    setAnswered(true);
+    userDispatch({ type: "SET_WAS_ANSWERED", answered: true });
     const userAnswer = e.target.answer.value;
-    setUserChoice(userAnswer);
+    userDispatch({ type: "SET_CHOICE", userChoice: userAnswer });
+
     if (userAnswer === correctAnswer) {
       //give user feedback
       win();
-      setIsCorrect(1);
+      userDispatch({ type: "SET_ANSWER_POINT", isCorrect: 1 });
     } else {
       beep();
-      setIsCorrect(0);
+      userDispatch({ type: "SET_ANSWER_POINT", isCorrect: 0 });
     }
   };
   //reset everything before moving to the next question
   const nextQuestionHandler = () => {
     //add to the array to store in database
     const curQuestionData = {
-      category: questions[curQuestion]?.category,
+      category: questions[curQuestionIdx]?.category,
       timestamp: format(new Date(), "MM-dd-yyy"),
       isCorrect: isCorrect,
     };
-
-    setQuestionData((prev) => {
-      return [...prev, curQuestionData];
+    questionsDispatch({
+      type: "SET_QUESTION_DATA",
+      questionData: curQuestionData,
     });
 
-    if (curQuestion < questions.length - 1) {
-      setCurQuestion((prev) => prev + 1);
-      setIsCorrect(0);
-      setAnswered(false);
+    if (curQuestionIdx < questions.length - 1) {
+      questionsDispatch({ type: "SET_CUR_QUESTION_IDX" });
+      userDispatch({ type: "SET_ANSWER_POINT", isCorrect: 0 });
+      userDispatch({ type: "SET_WAS_ANSWERED", answered: false });
       setValue("0");
     } else {
       setFinished(true);
@@ -193,10 +219,10 @@ const Quiz = () => {
   let content = (
     <Box>
       <Heading textAlign="center" as="h2" mb="20px" size="md">
-        Category: {questions[curQuestion]?.category}
+        Category: {questions[curQuestionIdx]?.category}
       </Heading>
       <Progress
-        value={(curQuestion + 1) * 10}
+        value={(curQuestionIdx + 1) * 10}
         mb="10px"
         borderRadius="10px"
         colorScheme="purple"
@@ -213,7 +239,7 @@ const Quiz = () => {
 
       <form onSubmit={submitQuestionHandler}>
         <Text mb="10px" fontSize="2xl">
-          {decodeHTML(questions[curQuestion]?.question)}
+          {decodeHTML(questions[curQuestionIdx]?.question)}
         </Text>
         {!answered && (
           <RadioGroup
@@ -221,13 +247,13 @@ const Quiz = () => {
             onChange={updateAnswerHandler}
             value={value}
           >
-            <Stack>{possibleAnswers}</Stack>
+            <Stack>{options}</Stack>
           </RadioGroup>
         )}
 
         {answered && (
           <List spacing="3">
-            {answers.map((answer, index) => {
+            {possibleAnswers.map((answer, index) => {
               if (correctAnswer == index) {
                 return (
                   <ListItem
